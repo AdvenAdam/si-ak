@@ -11,16 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gurus', function (Blueprint $table) {
+        Schema::create('mapels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-
-            $table->integer('nip');
-            $table->string('nama_guru');
-            $table->string('email')->unique();
-            // update to foreign
-            $table->string('mata_pelajaran');
-            $table->integer('id_mapel');
+            $table->string('nama_mata_pelajaran');
             $table->timestamps();
         });
     }
@@ -30,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gurus');
+        Schema::dropIfExists('mapels');
     }
 };
