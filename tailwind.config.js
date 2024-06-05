@@ -8,7 +8,7 @@ export default {
     "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
     "./storage/framework/views/*.php",
     "./resources/views/**/*.blade.php",
-    "./resources/js/**/*.tsx",
+    "./resources/js/**/*.jsx",
   ],
 
   theme: {
@@ -80,5 +80,6 @@ export default {
     },
   },
 
+  // eslint-disable-next-line no-undef
   plugins: [forms, require("tailwindcss-animate")],
 }

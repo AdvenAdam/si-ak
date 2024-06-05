@@ -13,4 +13,9 @@ class Kelas extends Model
         'tahun_ajaran',
         'guru_id'
     ];
+
+    public function Guru()
+    {
+        return $this->belongsTo(Guru::class);
+    }
 }

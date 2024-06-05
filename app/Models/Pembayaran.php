@@ -6,16 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Nilai extends Model
+class Pembayaran extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'penilaian_id',
         'siswa_id',
-        'mapel_id'
+        'tanggal_pembayaran',
+        'jumlah_pembayaran',
+        'tahun_ajaran',
+        'status_pembayaran'
     ];
 
-    public function siswa(): BelongsTo
+    public function Siswa(): BelongsTo
     {
         return $this->belongsTo(Siswa::class);
     }

@@ -14,7 +14,7 @@
             Schema::create('siswas', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users');
-                $table->integer('nisn');
+                $table->integer('nisn')->unique();
                 $table->string('nama');
                 $table->string('email')->unique();
                 // update to foreign 

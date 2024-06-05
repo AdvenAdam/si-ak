@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Guru extends Model
 {
@@ -16,4 +18,13 @@ class Guru extends Model
         'id_mapel',
         'id_user'
     ];
+    public function Account(): HasOne
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function Kelas(): HasMany
+    {
+        return $this->HasMany(Kelas::class);
+    }
 }
