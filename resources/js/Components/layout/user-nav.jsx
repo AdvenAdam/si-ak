@@ -60,7 +60,7 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.post("logout")}>
+        <DropdownMenuItem onClick={() => router.post("/logout")}>
           Log Out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
