@@ -18,7 +18,6 @@ export function DataTable({ columns, data, searchKey }) {
   /* this can be used to get the selectedrows 
   console.log("value", table.getFilteredSelectedRowModel()); */
 
-  console.log("🚀 ~ DataTable ~ table:", table);
   return (
     <>
       <Input
@@ -73,7 +72,7 @@ export function DataTable({ columns, data, searchKey }) {
           {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
           selected.
         </div>
-        <div className="space-x-2">
+        <div className="space-x-2 hidden">
           <Button
             variant="outline"
             size="sm"
