@@ -1,6 +1,17 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import { Link } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
 export default function Guest({ children }) {
-    return <div>{children}</div>;
+  return (
+    <div>
+      <Head>
+        <link
+          rel="icon"
+          href="/assets/logo/logo.svg"
+          type="image/svg+xml"
+        />
+      </Head>
+      {children}
+    </div>
+  );
 }
