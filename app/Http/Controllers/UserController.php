@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -44,6 +45,7 @@ class UserController extends Controller
             $request->validate([
                 'nama' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
+                'nisn' => 'required|unique:siswas,nisn',
                 'role_id' => 'required|exists:roles,id',
                 'password' => 'required|string|min:8|same:confirm',
             ]);
@@ -54,15 +56,14 @@ class UserController extends Controller
                 'password' => bcrypt($request->password),
                 'role_id' => $request->role_id,
             ]);
-
-            if ($request->role_id === 1  && !is_null($user)) {
+            if ($request->role_id == 1  && !is_null($user)) {
                 $siswa = Siswa::create([
                     'user_id' => $user->id,
                     'nama' => $request->nama,
                     'nisn' => $request->nisn,
                     'alamat' => $request->alamat,
                     'tanggal_lahir' => $request->tanggal_lahir,
-                    'id_kelas' => $request->id_kelas,
+                    'kelas_id' => intval($request->kelas_id),
                 ]);
                 if (is_null($siswa)) {
                     $user->delete();
@@ -71,10 +72,11 @@ class UserController extends Controller
                 DB::commit();
             }
 
-            return redirect()->back()->with('success', 'User berhasil ditambahkan');
+            return back();
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->validator->errors())->withInput();
         } catch (\Throwable $th) {
-            dd($th->getMessage());
-            return redirect()->back()->withErrors($th->getMessage());
+            return back()->withErrors([$th->getMessage()])->withInput();
         }
     }
 }

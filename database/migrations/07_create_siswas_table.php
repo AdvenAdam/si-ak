@@ -18,7 +18,7 @@
                 $table->string('nama');
                 // update to foreign 
                 $table->foreignId('kelas_id')->constrained('kelas');
-                $table->string('alamat');
+                $table->string('alamat')->nullable();
                 $table->string('tanggal_lahir');
                 $table->timestamps();
             });

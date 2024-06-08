@@ -7,7 +7,8 @@ import { toast } from "@/Components/ui/use-toast";
 import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm as inertiaForm, router } from "@inertiajs/react";
+import { useForm as inertiaForm, router, usePage } from "@inertiajs/react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 const formSchema = z
@@ -15,11 +16,11 @@ const formSchema = z
     nama: z.string({ message: "Name is required" }),
     nisn: z.string({ message: "NISN is required" }).regex(/^\d+$/, { message: "NISN must be a number" }),
     alamat: z.string().optional(),
-    tanggal_lahir: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    tanggal_lahir: z.string({ message: "Date of Birth is required" }).refine((val) => !isNaN(Date.parse(val)), {
       message: "Date of Birth is invalid",
       path: ["tanggal_lahir"],
     }),
-    id_kelas: z.string({ message: "Class is required" }),
+    kelas_id: z.string({ message: "Class is required" }),
     email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
     password: z.string({ message: "Password is required" }).min(8, "Password must be at least 8 characters"),
     confirm: z.string({ message: "Confirm password is required" }).min(8, "Password must be at least 8 characters"),
@@ -30,20 +31,52 @@ const formSchema = z
   });
 
 const SiswaForm = () => {
-  const { post, errors } = inertiaForm();
-  console.log("🚀 ~ SiswaForm ~ errors:", errors);
+  const { post, errors, recentlySuccessful } = inertiaForm();
+  const hasErrors = Boolean(Object.keys(errors).length);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      nama: "",
+      nisn: "",
+      alamat: "",
+      tanggal_lahir: "",
+      kelas_id: "",
+      confirm: "",
     },
   });
+
+  useEffect(() => {
+    if (hasErrors) {
+      const messageError = Object.entries(errors).reduce((acc, [key, value]) => {
+        form.setError(key, { message: value });
+        return { ...acc, [key]: value };
+      }, {});
+      const toastMessage = Object.values(messageError).map((message) => <li key={message}>{message}</li>);
+      toast({
+        className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
+        variant: "destructive",
+        title: "Login Failed",
+        description: <ol>{toastMessage}</ol>,
+        duration: 5000, //5s
+      });
+    }
+    if (recentlySuccessful) {
+      form.reset();
+      toast({
+        className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
+        variant: "success",
+        title: "Success",
+        description: "Data has been saved",
+        duration: 5000, //5s
+      });
+    }
+  }, [hasErrors, errors, recentlySuccessful, form]);
+
   const onSubmit = (data) => {
     // eslint-disable-next-line no-undef
-    router.post(route("user.store"), { ...data, role_id: 1 });
-    // post(route("user.store"), { ...data, role_id: 1 });
-    console.log({ ...data, role_id: 1 });
+    post(route("user.store", { ...data, role_id: 1 }));
   };
   const onErrorSubmit = (errors) => {
     if (errors) {
@@ -84,7 +117,7 @@ const SiswaForm = () => {
               />
               <InputSelect
                 form={form}
-                name={"id_kelas"}
+                name={"kelas_id"}
                 label={"Kelas"}
                 placeholder={"Pilih Kelas"}
                 data={[

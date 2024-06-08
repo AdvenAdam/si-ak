@@ -25,9 +25,9 @@ export function UserNav() {
           <Avatar className="h-8 w-8">
             <AvatarImage
               src={user?.image ?? ""}
-              alt={user?.name ?? ""}
+              alt={user?.username ?? ""}
             />
-            <AvatarFallback>{user?.name?.[0]}</AvatarFallback>
+            <AvatarFallback>{user?.username?.[0]}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
