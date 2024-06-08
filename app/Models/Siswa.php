@@ -14,17 +14,20 @@ class Siswa extends Model
     protected $fillable = [
         'nisn',
         'nama',
-        'id_kelas',
+        'kelas_id',
         'alamat',
         'tanggal_lahir',
-        'id_user'
+        'user_id'
     ];
 
     public function Account(): HasOne
     {
         return $this->hasOne(User::class);
     }
-
+    public function Kelas(): HasMany
+    {
+        return $this->HasMany(Kelas::class);
+    }
     public function RiwayatKelas(): HasMany
     {
         return $this->HasMany(RiwayatKelas::class);

@@ -15,8 +15,8 @@ class Guru extends Model
         'nip',
         'nama_guru',
         'mata_pelajaran',
-        'id_mapel',
-        'id_user'
+        'mapel_id',
+        'user_id'
     ];
     public function Account(): HasOne
     {

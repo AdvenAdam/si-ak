@@ -16,9 +16,8 @@
                 $table->foreignId('user_id')->constrained('users');
                 $table->integer('nisn')->unique();
                 $table->string('nama');
-                $table->string('email')->unique();
                 // update to foreign 
-                $table->integer('id_kelas');
+                $table->foreignId('kelas_id')->constrained('kelas');
                 $table->string('alamat');
                 $table->string('tanggal_lahir');
                 $table->timestamps();
