@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { useUserStore } from "@/hooks/useUser";
-import ResponsiveNavLink from "../ResponsiveNavLink";
 import { router } from "@inertiajs/react";
 export function UserNav() {
   const { user } = useUserStore();

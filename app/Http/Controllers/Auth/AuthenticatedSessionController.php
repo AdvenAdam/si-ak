@@ -29,7 +29,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $email = $request->email;
+        $field = filter_var($email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $request->merge([$field => $email]);
+
+        $request->authenticate($field);
 
         $request->session()->regenerate();
 

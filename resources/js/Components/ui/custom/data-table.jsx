@@ -26,7 +26,7 @@ export function DataTable({ columns, data, searchKey }) {
         onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
         className="w-full md:max-w-sm"
       />
-      <ScrollArea className="h-[calc(80vh-220px)] rounded-md border">
+      <ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -67,12 +67,12 @@ export function DataTable({ columns, data, searchKey }) {
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className=" items-center justify-end space-x-2 py-4 hidden">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
           selected.
         </div>
-        <div className="space-x-2 hidden">
+        <div className="space-x-2 ">
           <Button
             variant="outline"
             size="sm"

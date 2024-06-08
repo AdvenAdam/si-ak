@@ -1,9 +1,9 @@
-import { Icons } from "@/Components/icons";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { useSidebar } from "@/hooks/useSidebar";
 import { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
+import { Icons } from "../ui/icons";
 
 export function DashboardNav({ items, setOpen, isMobileNav = false }) {
   const [pathname, setPathname] = useState("");

@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/Components/ui/form";
 import { Button } from "@/Components/ui/button";
-import Checkbox from "@/Components/Checkbox";
 import { useForm } from "react-hook-form";
 import { Input } from "@/Components/ui/input";
 import { useToast } from "../Components/ui/use-toast";
 import { Toaster } from "@/Components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
+import { Checkbox } from "@/Components/ui/checkbox";
 
 const formSchema = z.object({
   email: z

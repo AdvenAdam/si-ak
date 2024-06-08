@@ -11,7 +11,13 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         return Inertia::render('Dashboard/Home');
     })->name('dashboard');
 
-    Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    Route::group(['prefix' => 'user'], function () {
+        Route::get('/', [UserController::class, 'index'])->name('user.index');
+        Route::get('/new', function () {
+            return Inertia::render('Dashboard/User/AddUser');
+        })->name('user.new');
+        Route::post('/new', [UserController::class, 'store'])->name('user.store');
+    });
 });
 
 Route::middleware('auth')->group(function () {
