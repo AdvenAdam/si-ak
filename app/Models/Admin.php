@@ -4,21 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Admin extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-
-        'nama',
+        'user_id',
+        'nama_admin',
         'email',
-        'id_user'
     ];
 
-    public function Account(): HasOne
+    public function Account(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->BelongsTo(User::class);
     }
 }

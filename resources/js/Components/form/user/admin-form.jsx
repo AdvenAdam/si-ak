@@ -4,21 +4,17 @@ import InputForm from "@/Components/ui/custom/input-form";
 import InputSelect from "@/Components/ui/custom/input-select";
 import { Form } from "@/Components/ui/form";
 import { toast } from "@/Components/ui/use-toast";
-import { useMapelDataStore } from "@/hooks/useMapelData";
+import { useKelasDataStore } from "@/hooks/useKelasData";
 import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm as inertiaForm } from "@inertiajs/react";
+import { useForm as inertiaForm, router } from "@inertiajs/react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 const formSchema = z
   .object({
-    nama: z.string().min(1, { message: "Name is required" }),
-    nip: z.string().min(1, { message: "NIP is required" }).regex(/^\d+$/, { message: "NIP must be a number" }),
-    alamat: z.string().optional(),
-    tanggal_lahir: z.string().min(1, { message: "Tanggal Lahir is required" }),
-    mapel_id: z.string().min(1, { message: "Mata Pelajaran is required" }),
+    nama: z.string().min(1, { message: "Username is required" }),
     email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
     password: z.string().min(1, { message: "Password is required" }).min(8, "Password must be at least 8 characters"),
     confirm: z
@@ -31,9 +27,7 @@ const formSchema = z
     path: ["confirm"],
   });
 
-const GuruForm = () => {
-  const { mapel } = useMapelDataStore();
-
+const AdminForm = () => {
   const { post, errors, recentlySuccessful } = inertiaForm();
   const hasErrors = Boolean(Object.keys(errors).length);
   const form = useForm({
@@ -42,10 +36,6 @@ const GuruForm = () => {
       email: "",
       password: "",
       nama: "",
-      nip: "",
-      alamat: "",
-      tanggal_lahir: "",
-      mapel_id: "",
       confirm: "",
     },
   });
@@ -66,7 +56,7 @@ const GuruForm = () => {
       });
     }
     if (recentlySuccessful) {
-      form.reset();
+      // form.reset();
       toast({
         className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
         variant: "success",
@@ -79,7 +69,7 @@ const GuruForm = () => {
 
   const onSubmit = (data) => {
     // eslint-disable-next-line no-undef
-    post(route("user.store", { ...data, role_id: 2 }));
+    post(route("user.store", { ...data, role_id: 3 }));
   };
   const onErrorSubmit = (errors) => {
     if (errors) {
@@ -101,60 +91,22 @@ const GuruForm = () => {
         >
           <CardContent className="space-y-6">
             <div className="space-y-2 mt-10">
-              <CardTitle>Guru</CardTitle>
-              <CardDescription>{`Make changes to your Guru here. Click save when you're done.`}</CardDescription>
-            </div>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 small:grid-cols-1">
-              <InputForm
-                form={form}
-                name={"nama"}
-                label={"Nama"}
-                type={"text"}
-              />
-              <InputForm
-                form={form}
-                name={"nip"}
-                label={"NIP"}
-                type={"number"}
-                min={0}
-              />
-              <InputSelect
-                form={form}
-                name={"mapel_id"}
-                label={"Mata Pelajaran"}
-                placeholder={"Pilih Mata Pelajaran"}
-                data={mapel.map((data) => ({
-                  value: data.id,
-                  label: data.nama_mata_pelajaran,
-                }))}
-              />
-              <InputForm
-                form={form}
-                name={"tanggal_lahir"}
-                label={"Tanggal Lahir"}
-                type={"date"}
-                className="w-fit"
-              />
-            </div>
-            <div className="grid grid-cols-1">
-              <InputForm
-                form={form}
-                name={"alamat"}
-                label={"Alamat"}
-                type={"text"}
-                className="w-full"
-              />
-            </div>
-            <div className="space-y-2">
-              <CardTitle>Informasi Akun</CardTitle>
-              <CardDescription>{`Make changes to your Account here. Click save when you're done.`}</CardDescription>
+              <CardTitle>Admin</CardTitle>
+              <CardDescription>{`Make changes to your Admin here. Click save when you're done.`}</CardDescription>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 small:grid-cols-1">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <InputForm
                 form={form}
                 name={"email"}
                 label={"Email"}
+                type={"text"}
+              />
+
+              <InputForm
+                form={form}
+                name={"nama"}
+                label={"Username"}
                 type={"text"}
               />
               <InputForm
@@ -180,4 +132,4 @@ const GuruForm = () => {
   );
 };
 
-export default GuruForm;
+export default AdminForm;

@@ -14,17 +14,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 const formSchema = z
   .object({
-    nama: z.string({ message: "Name is required" }),
-    nisn: z.string({ message: "NISN is required" }).regex(/^\d+$/, { message: "NISN must be a number" }),
+    nama: z.string().min(1, { message: "Name is required" }),
+    nisn: z.string().min(1, { message: "NISN is required" }).regex(/^\d+$/, { message: "NISN must be a number" }),
     alamat: z.string().optional(),
-    tanggal_lahir: z.string({ message: "Date of Birth is required" }).refine((val) => !isNaN(Date.parse(val)), {
-      message: "Date of Birth is invalid",
-      path: ["tanggal_lahir"],
-    }),
-    kelas_id: z.string({ message: "Class is required" }),
+    tanggal_lahir: z.string().min(1, { message: "Tanggal Lahir is required" }),
+    kelas_id: z.string().min(1, { message: "Class is required" }),
     email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
-    password: z.string({ message: "Password is required" }).min(8, "Password must be at least 8 characters"),
-    confirm: z.string({ message: "Confirm password is required" }).min(8, "Password must be at least 8 characters"),
+    password: z.string().min(1, { message: "Password is required" }).min(8, "Password must be at least 8 characters"),
+    confirm: z
+      .string()
+      .min(1, { message: "Confirm password is required" })
+      .min(8, "Password must be at least 8 characters"),
   })
   .refine((data) => data.password === data.confirm, {
     message: "Passwords don't match",
@@ -33,14 +33,6 @@ const formSchema = z
 
 const SiswaForm = () => {
   const { kelas } = useKelasDataStore();
-  // NOTE Reformat Kelas to selectData
-  let selectData = [];
-  kelas.forEach((data) => {
-    selectData.push({
-      value: data.id,
-      label: data.nama_kelas,
-    });
-  });
 
   const { post, errors, recentlySuccessful } = inertiaForm();
   const hasErrors = Boolean(Object.keys(errors).length);
@@ -131,7 +123,10 @@ const SiswaForm = () => {
                 name={"kelas_id"}
                 label={"Kelas"}
                 placeholder={"Pilih Kelas"}
-                data={selectData}
+                data={kelas.map((data) => ({
+                  value: data.id,
+                  label: data.nama_kelas,
+                }))}
               />
               <InputForm
                 form={form}
