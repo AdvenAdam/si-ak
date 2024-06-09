@@ -16,7 +16,18 @@ export const CellAction = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    setLoading(true);
+    try {
+      // eslint-disable-next-line no-undef
+      router.delete(route("user.destroy", data.id));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  };
 
   return (
     <>
@@ -39,7 +50,7 @@ export const CellAction = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem onClick={() => router.get(`/dashboard/user/${data.id}`)}>
+          <DropdownMenuItem onClick={() => router.get(`/dashboard/user/update/${data.id}`)}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>

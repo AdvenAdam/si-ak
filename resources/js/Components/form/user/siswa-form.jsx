@@ -4,10 +4,11 @@ import InputForm from "@/Components/ui/custom/input-form";
 import InputSelect from "@/Components/ui/custom/input-select";
 import { Form } from "@/Components/ui/form";
 import { toast } from "@/Components/ui/use-toast";
+import { useKelasDataStore } from "@/hooks/useKelasData";
 import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm as inertiaForm, router, usePage } from "@inertiajs/react";
+import { useForm as inertiaForm, router } from "@inertiajs/react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,6 +32,16 @@ const formSchema = z
   });
 
 const SiswaForm = () => {
+  const { kelas } = useKelasDataStore();
+  // NOTE Reformat Kelas to selectData
+  let selectData = [];
+  kelas.forEach((data) => {
+    selectData.push({
+      value: data.id,
+      label: data.nama_kelas,
+    });
+  });
+
   const { post, errors, recentlySuccessful } = inertiaForm();
   const hasErrors = Boolean(Object.keys(errors).length);
   const form = useForm({
@@ -120,11 +131,7 @@ const SiswaForm = () => {
                 name={"kelas_id"}
                 label={"Kelas"}
                 placeholder={"Pilih Kelas"}
-                data={[
-                  { value: 1, label: "X" },
-                  { value: 2, label: "XI" },
-                  { value: 3, label: "XII" },
-                ]}
+                data={selectData}
               />
               <InputForm
                 form={form}

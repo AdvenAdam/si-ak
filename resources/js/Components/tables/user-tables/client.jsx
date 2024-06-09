@@ -24,7 +24,7 @@ export const UserClient = ({ data }) => {
       </div>
       <Separator />
       <DataTable
-        searchKey="name"
+        searchKey="username"
         columns={columns}
         data={data}
       />

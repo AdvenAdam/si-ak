@@ -7,7 +7,7 @@ export const columns = [
     cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: "name",
+    accessorKey: "username",
     header: "NAME",
   },
   {

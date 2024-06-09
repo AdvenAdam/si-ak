@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
+use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,11 +22,10 @@ class UserController extends Controller
         try {
             $data = [];
             $users = User::with('role:id,jenis_role')->get();
-            # code...
             foreach ($users as $item) {
                 $data[] = [
                     'id' => $item->id,
-                    'nama' => $item->nama,
+                    'username' => $item->username,
                     'email' => $item->email,
                     'role' => $item->role->jenis_role,
                     'join_date' => $item->created_at->format('j F, Y')
@@ -38,6 +40,21 @@ class UserController extends Controller
             ]);
         }
     }
+    function create(): Response
+    {
+
+        try {
+            $kelas = Kelas::all();
+            return Inertia::render('Dashboard/User/AddUser', [
+                'kelas' => $kelas,
+            ]);
+        } catch (\Throwable $th) {
+            return Inertia::render('Errors/Error', [
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
+
 
     function store(Request $request): RedirectResponse
     {
@@ -77,6 +94,56 @@ class UserController extends Controller
             return back()->withErrors($e->validator->errors())->withInput();
         } catch (\Throwable $th) {
             return back()->withErrors([$th->getMessage()])->withInput();
+        }
+    }
+
+    public function destroy(User $user)
+    {
+        DB::beginTransaction();
+        try {
+            if ($user->role->jenis_role == 'siswa') {
+                $siswa = Siswa::where('user_id', $user->id)->first();
+                $siswa->delete();
+            } elseif ($user->role->jenis_role == 'guru') {
+                $guru = Guru::where('user_id', $user->id)->first();
+                $guru->delete();
+            } elseif ($user->role->jenis_role == 'admin') {
+                $admin = Admin::where('user_id', $user->id)->first();
+                $admin->delete();
+            }
+            $user->delete();
+            DB::commit();
+            return redirect('/dashboard/user');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors([$th->getMessage()]);
+        }
+    }
+    public function update(User $user): Response
+    {
+        // NOTE : Reformat Data
+        try {
+            $data['user'] = [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role->jenis_role,
+                'join_date' => $user->created_at->format('j F, Y')
+            ];
+            if ($user->role->jenis_role == 'siswa') {
+                $data['detailUser'] = Siswa::with('Account')->where('user_id', $user->id)->first();
+            } else if ($user->role->jenis_role == 'guru') {
+                $data['detailUser'] = Guru::with('Account')->where('user_id', $user->id)->first();
+            } else if ($user->role->jenis_role == 'admin') {
+                $data['detailUser'] = Admin::with('Account')->where('user_id', $user->id)->first();
+            }
+            return Inertia::render('Dashboard/User/Update', [
+                'user' => $data,
+            ]);
+        } catch (\Throwable $th) {
+            return Inertia::render('Dashboard/User/Update', [
+                'error' => $th->getMessage(),
+            ]);
         }
     }
 }

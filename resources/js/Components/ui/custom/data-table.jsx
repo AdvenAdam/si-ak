@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
@@ -12,11 +13,8 @@ export function DataTable({ columns, data, searchKey }) {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    pageCount: 50,
+    pageCount: 10,
   });
-
-  /* this can be used to get the selectedrows 
-  console.log("value", table.getFilteredSelectedRowModel()); */
 
   return (
     <>
@@ -26,7 +24,7 @@ export function DataTable({ columns, data, searchKey }) {
         onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
         className="w-full md:max-w-sm"
       />
-      <ScrollArea className="h-[calc(90vh-220px)] rounded-md border">
+      <ScrollArea className="h-[calc(85vh-220px)] rounded-md border">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -67,12 +65,12 @@ export function DataTable({ columns, data, searchKey }) {
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <div className=" items-center justify-end space-x-2 py-4 hidden">
+      <div className="items-center justify-end space-x-2 py-4 hidden">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
           selected.
         </div>
-        <div className="space-x-2 ">
+        <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"

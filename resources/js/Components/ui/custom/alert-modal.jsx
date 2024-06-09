@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/Components/ui/button";
-import Modal from "@/Components/Modal";
+import { Modal } from "./modal";
 
 export const AlertModal = ({ isOpen, onClose, onConfirm, loading }) => {
   const [isMounted, setIsMounted] = useState(false);

@@ -13,10 +13,10 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
 
     Route::group(['prefix' => 'user'], function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index');
-        Route::get('/new', function () {
-            return Inertia::render('Dashboard/User/AddUser');
-        })->name('user.new');
+        Route::get('/new', [UserController::class, 'create'])->name('user.new');
         Route::post('/new', [UserController::class, 'store'])->name('user.store');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('/update/{user}', [UserController::class, 'update'])->name('user.update');
     });
 });
 
