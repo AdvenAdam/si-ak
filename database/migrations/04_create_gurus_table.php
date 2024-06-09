@@ -17,7 +17,8 @@ return new class extends Migration
             $table->integer('nip');
             $table->string('nama_guru');
             // update to foreign
-            $table->string('mata_pelajaran');
+            $table->string('alamat');
+            $table->string('tanggal_lahir');
             $table->foreignId('mapel_id')->constrained('mapels');
             $table->timestamps();
         });
