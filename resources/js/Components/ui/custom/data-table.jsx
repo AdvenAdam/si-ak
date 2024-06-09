@@ -7,7 +7,7 @@ import { ScrollArea, ScrollBar } from "../scroll-area";
 import { Button } from "../button";
 import { Input } from "../input";
 
-export function DataTable({ columns, data, searchKey }) {
+export function DataTable({ columns, data, searchKey, searchPlaceholder }) {
   const table = useReactTable({
     data,
     columns,
@@ -19,7 +19,7 @@ export function DataTable({ columns, data, searchKey }) {
   return (
     <>
       <Input
-        placeholder={`Search ${searchKey}...`}
+        placeholder={`Search ${searchPlaceholder || searchKey}...`}
         value={table.getColumn(searchKey)?.getFilterValue() ?? ""}
         onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
         className="w-full md:max-w-sm"

@@ -19,7 +19,6 @@ class UserController extends Controller
 {
     function index(): Response
     {
-        // NOTE : Reformat Data
         try {
             $data = [];
             $users = User::with('role:id,jenis_role')->get();

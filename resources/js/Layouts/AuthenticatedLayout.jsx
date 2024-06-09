@@ -20,9 +20,9 @@ export default function Authenticated({ user, children }) {
         />
       </Head>
       <Header />
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex h-screen">
         <Sidebar />
-        <main className="flex-1 overflow-hidden pt-16">{children}</main>
+        <main className="flex-1 pt-16">{children}</main>
       </div>
       <Toaster />
     </>

@@ -27,10 +27,10 @@ export default function Sidebar({ className }) {
       label: "user",
     },
     {
-      title: "Employee",
-      href: "/dashboard/employee",
-      icon: "employee",
-      label: "employee",
+      title: "Kelas & Mapel",
+      href: "/dashboard/Kelas&Mapel",
+      icon: "shapes",
+      label: "kelas & mapel",
     },
     {
       title: "Profile",

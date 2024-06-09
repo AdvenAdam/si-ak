@@ -15,7 +15,10 @@ export function BreadcrumbComponent() {
     <Breadcrumb>
       <BreadcrumbList>
         {pathnames.map((pathname, index) => (
-          <>
+          <div
+            className="flex items-center space-x-2"
+            key={index}
+          >
             <BreadcrumbItem key={pathname}>
               {index === pathnames.length - 1 ? (
                 <BreadcrumbPage>{pathname}</BreadcrumbPage>
@@ -24,7 +27,7 @@ export function BreadcrumbComponent() {
               )}
             </BreadcrumbItem>
             {index !== pathnames.length - 1 && <BreadcrumbSeparator />}
-          </>
+          </div>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

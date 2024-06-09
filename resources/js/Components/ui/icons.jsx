@@ -20,6 +20,7 @@ import {
   Pizza,
   Plus,
   Settings,
+  Shapes,
   SunMedium,
   Trash,
   Twitter,
@@ -56,6 +57,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  shapes: Shapes,
   gitHub: ({ ...props }) => (
     <svg
       aria-hidden="true"

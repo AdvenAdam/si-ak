@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KelasMapelController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -17,6 +18,12 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::post('/new', [UserController::class, 'store'])->name('user.store');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('user.destroy');
         Route::get('/update/{user}', [UserController::class, 'update'])->name('user.update');
+    });
+
+    Route::group(['prefix' => 'Kelas&Mapel'], function () {
+        Route::get('/', [KelasMapelController::class, 'index'])->name('Kelas&Mapel.index');
+        Route::post('/new', [KelasMapelController::class, 'store'])->name('Kelas&Mapel.new');
+        Route::delete('/{user}', [KelasMapelController::class, 'destroy'])->name('user.destroy');
     });
 });
 
