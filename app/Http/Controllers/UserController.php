@@ -35,9 +35,7 @@ class UserController extends Controller
                 'users' => $data,
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error', [
-                'message' => $th->getMessage(),
-            ]);
+            return back()->withErrors([$th->getMessage()])->withInput();
         }
     }
     function create(): Response
@@ -50,9 +48,7 @@ class UserController extends Controller
                 'mapel' => Mapel::all(),
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Errors/Error', [
-                'message' => $th->getMessage(),
-            ]);
+            return back()->withErrors([$th->getMessage()])->withInput();
         }
     }
 
@@ -132,7 +128,7 @@ class UserController extends Controller
             }
             DB::commit();
 
-            return back();
+            return back()->with('success', 'User Save successfully');
         } catch (ValidationException $e) {
             return back()->withErrors($e->validator->errors())->withInput();
         } catch (\Throwable $th) {
@@ -145,18 +141,15 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             if ($user->role->jenis_role == 'siswa') {
-                $siswa = Siswa::where('user_id', $user->id)->first();
-                $siswa->delete();
+                Siswa::where('user_id', $user->id)->delete();
             } elseif ($user->role->jenis_role == 'guru') {
-                $guru = Guru::where('user_id', $user->id)->first();
-                $guru->delete();
+                Guru::where('user_id', $user->id)->delete();
             } elseif ($user->role->jenis_role == 'admin') {
-                $admin = Admin::where('user_id', $user->id)->first();
-                $admin->delete();
+                Admin::where('user_id', $user->id)->delete();
             }
             $user->delete();
             DB::commit();
-            return redirect('/dashboard/user');
+            return back()->with('success', 'User Delete successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors([$th->getMessage()]);
@@ -184,9 +177,7 @@ class UserController extends Controller
                 'user' => $data,
             ]);
         } catch (\Throwable $th) {
-            return Inertia::render('Dashboard/User/Update', [
-                'error' => $th->getMessage(),
-            ]);
+            return back()->withErrors([$th->getMessage()]);
         }
     }
 }

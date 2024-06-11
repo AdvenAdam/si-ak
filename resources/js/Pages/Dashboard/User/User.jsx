@@ -4,6 +4,7 @@ import { BreadcrumbComponent } from "@/Components/ui/custom/breadcrumb";
 import { UserClient } from "@/Components/tables/user-tables/client";
 
 export default function User(props) {
+  console.log("🚀 ~ User ~ props:", props);
   return (
     <AuthenticatedLayout user={props.auth.user}>
       <Head title="User Page" />

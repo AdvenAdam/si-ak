@@ -23,7 +23,8 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     Route::group(['prefix' => 'Kelas&Mapel'], function () {
         Route::get('/', [KelasMapelController::class, 'index'])->name('Kelas&Mapel.index');
         Route::post('/new', [KelasMapelController::class, 'store'])->name('Kelas&Mapel.new');
-        Route::delete('/{user}', [KelasMapelController::class, 'destroy'])->name('user.destroy');
+        Route::delete('/mapel/{mapel}', [KelasMapelController::class, 'destroyMapel'])->name('mapel.destroy');
+        Route::delete('/kelas/{kelas}', [KelasMapelController::class, 'destroyKelas'])->name('kelas.destroy');
     });
 });
 

@@ -1,15 +1,28 @@
 import Header from "@/Components/layout/header";
 import Sidebar from "@/Components/layout/sidebar";
 import { Toaster } from "@/Components/ui/toaster";
+import { toast } from "@/Components/ui/use-toast";
 import { useUserStore } from "@/hooks/useUser";
-import { Head } from "@inertiajs/react";
+import { cn } from "@/lib/utils";
+import { Head, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
 
 export default function Authenticated({ user, children }) {
   useEffect(() => {
     useUserStore.setState({ user });
   }, [user]);
-
+  const { flash } = usePage().props;
+  useEffect(() => {
+    if (flash.success || flash.error) {
+      toast({
+        className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
+        variant: flash.success ? "success" : "destructive",
+        title: flash.success ? "Success" : "Failed",
+        description: flash.success ? flash.success : flash.error,
+        duration: 3000, //3s
+      });
+    }
+  }, [flash.success, flash.error]);
   return (
     <>
       <Head>

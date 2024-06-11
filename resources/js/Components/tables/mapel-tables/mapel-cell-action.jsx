@@ -20,7 +20,7 @@ export const MapelCellAction = ({ data }) => {
     setLoading(true);
     try {
       // eslint-disable-next-line no-undef
-      router.delete(route("user.destroy", data.id));
+      router.delete(route("mapel.destroy", data.id));
     } catch (error) {
       console.log(error);
     } finally {

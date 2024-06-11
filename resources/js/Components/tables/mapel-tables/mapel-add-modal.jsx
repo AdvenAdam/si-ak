@@ -14,7 +14,7 @@ const formSchema = z.object({
   nama: z.string().min(1, { message: "Name is required" }),
 });
 
-export const MapelAddModal = ({ isOpen, onClose, onConfirm, error }) => {
+export const MapelAddModal = ({ isOpen, onClose }) => {
   const { errors } = usePage().props;
   const [isMounted, setIsMounted] = useState(false);
 
@@ -39,6 +39,8 @@ export const MapelAddModal = ({ isOpen, onClose, onConfirm, error }) => {
           duration: 5000, //5s
         });
       });
+    } else {
+      handleClose();
     }
   };
   const handleClose = () => {

@@ -67,13 +67,6 @@ const SiswaForm = () => {
     }
     if (recentlySuccessful) {
       form.reset();
-      toast({
-        className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
-        variant: "success",
-        title: "Success",
-        description: "Data has been saved",
-        duration: 5000, //5s
-      });
     }
   }, [hasErrors, errors, recentlySuccessful, form]);
 
