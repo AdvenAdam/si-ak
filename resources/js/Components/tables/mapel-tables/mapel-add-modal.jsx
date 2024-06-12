@@ -15,7 +15,7 @@ const formSchema = z.object({
 });
 
 export const MapelAddModal = ({ isOpen, onClose }) => {
-  const { errors } = usePage().props;
+  const { errors, flash } = usePage().props;
   const { setPage } = usePage();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -29,9 +29,6 @@ export const MapelAddModal = ({ isOpen, onClose }) => {
   const onSubmit = (data) => {
     // eslint-disable-next-line no-undef
     router.post(route("Kelas&Mapel.new"), { ...data, insertFor: "mapel" });
-  };
-  const handleClose = () => {
-    onClose();
   };
 
   const onErrorSubmit = (errors) => {
@@ -59,10 +56,13 @@ export const MapelAddModal = ({ isOpen, onClose }) => {
         });
       });
     }
-    if (Object.keys(errors).length === 0) {
-      form.reset();
-    }
   }, [errors, form, setPage]);
+
+  useEffect(() => {
+    if (flash.success) {
+      onClose();
+    }
+  }, [flash.success, onClose]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -76,7 +76,7 @@ export const MapelAddModal = ({ isOpen, onClose }) => {
     <Modal
       title="Add New Mata Pelajaran"
       isOpen={isOpen}
-      onClose={handleClose}
+      onClose={onClose}
     >
       <div className="w-full">
         <Form {...form}>

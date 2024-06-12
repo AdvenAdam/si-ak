@@ -18,12 +18,18 @@ class KelasMapelController extends Controller
         // NOTE : Reformat Data
         try {
             return Inertia::render('Dashboard/KelasMapel/KelasMapel', [
-                'kelas' => Kelas::with('guru')->orderBy('tahun_ajaran')->get(),
+                'kelas' => Kelas::with('guru')
+                    ->orderBy('tahun_ajaran', 'desc')
+                    ->orderBy('nama_kelas')
+                    ->get(),
                 'mapel' => Mapel::orderBy('nama_mata_pelajaran')->get(),
-                'guru'  => Guru::orderBy('nama_guru')->get(),
+                'guru'  => Guru::with('Mapel')->orderBy('nama_guru')->get(),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors([$th->getMessage()]);
+            dd($th->getMessage());
+            return Inertia::render('Dashboard/KelasMapel/KelasMapel', [
+                'error' => $th->getMessage(),
+            ]);
         }
     }
     function store(Request $request)
@@ -39,23 +45,28 @@ class KelasMapelController extends Controller
         try {
             $request->validate([
                 'nama' => 'required|unique:mapels,nama_mata_pelajaran',
+            ], [
+                'nama.unique' => 'Mata pelajaran sudah ada',
             ]);
         } catch (ValidationException $e) {
             return back()->withErrors($e->validator->errors())->withInput();
         }
+
         Mapel::create([
             'nama_mata_pelajaran' => $request['nama'],
         ]);
 
         return redirect()->route('Kelas&Mapel.index')
-            ->with('success', 'Mata Pelajaran Savesu successfully');
+            ->with('success', 'Mata Pelajaran Berhasil ditambahkan.');
     }
 
     function insertKelas($request)
     {
         try {
             $request->validate([
-                'nama' => 'required|unique:kelas,nama_kelas',
+                'nama' => 'required|unique:kelas,nama_kelas,NULL,id,tahun_ajaran,' . $request['tahun_mulai'] . '/' . $request['tahun_selesai'],
+            ], [
+                'nama.unique' => 'Kelas sudah ada',
             ]);
         } catch (ValidationException $e) {
             return back()->withErrors($e->validator->errors())->withInput();
@@ -66,7 +77,7 @@ class KelasMapelController extends Controller
             'tahun_ajaran' => $request['tahun_mulai'] . '/' . $request['tahun_selesai'],
         ]);
         return redirect()->route('Kelas&Mapel.index')
-            ->with('success', 'Kelas Save successfully');
+            ->with('success', 'Kelas Berhasil ditambahkan.');
     }
 
     function destroyMapel($id): RedirectResponse
@@ -74,10 +85,10 @@ class KelasMapelController extends Controller
         try {
             Mapel::find($id)->delete();
             return redirect()->route('Kelas&Mapel.index')
-                ->with('success', 'Mata Pelajaran Delete successfully');
+                ->with('success', 'Mata Pelajaran Berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->route('Kelas&Mapel.index')
-                ->with('error', 'Mata Pelajaran Delete failed');
+                ->with('error', 'Mata Pelajaran Gagal dihapus.');
         }
     }
     function destroyKelas($id): RedirectResponse
@@ -85,10 +96,10 @@ class KelasMapelController extends Controller
         try {
             Kelas::find($id)->delete();
             return redirect()->route('Kelas&Mapel.index')
-                ->with('success', 'Kelas Delete successfully');
+                ->with('success', 'Kelas Berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->route('Kelas&Mapel.index')
-                ->with('error', 'Kelas Delete failed');
+                ->with('error', 'Kelas Gagal dihapus.');
         }
     }
 }

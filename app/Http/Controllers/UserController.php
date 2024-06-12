@@ -110,7 +110,6 @@ class UserController extends Controller
                     'mapel_id' => intval($request->mapel_id),
                 ]);
                 if (is_null($guru)) {
-                    dd($guru);
                     $user->delete();
                     DB::rollBack();
                 }

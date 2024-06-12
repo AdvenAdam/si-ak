@@ -27,6 +27,8 @@ export default function Authenticated({ user, children }) {
         onClose: () => setPage((prev) => ({ ...prev, flash: null })),
       });
     }
+    delete flash.success;
+    delete flash.error;
   }, [flash, setPage]);
   return (
     <>

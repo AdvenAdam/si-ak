@@ -11,22 +11,25 @@ import InputForm from "@/Components/ui/custom/input-form";
 import { Button } from "@/Components/ui/button";
 import { useGuruDataStore } from "@/hooks/useGuruData";
 import InputSelect from "@/Components/ui/custom/input-select";
+import { Separator } from "@/Components/ui/separator";
+import AddGuruMapel from "./Kelas-addGuru";
 const formSchema = z.object({
   nama: z
     .string()
-    .min(1, { message: "Name is required" })
+    .min(1, { message: "Name Belum diisi." })
     .transform((value) => value?.trim()),
   guru_id: z
     .string()
-    .min(1, { message: "Wali Guru is required" })
+    .min(1, { message: "Wali Guru Belum diisi." })
     .transform((value) => value?.trim()),
-  tahun_mulai: z.string().min(1, { message: "Tahun Mulai Ajaran is required" }),
-  tahun_selesai: z.string().min(1, { message: "Tahun Selesai Ajaran is required" }),
+  tahun_mulai: z.string().min(1, { message: "Tahun Mulai Ajaran Belum diisi." }),
+  tahun_selesai: z.string().min(1, { message: "Tahun Selesai Ajaran Belum diisi." }),
 });
 
 const KelasAddModal = ({ isOpen, onClose }) => {
   const { guru } = useGuruDataStore();
-  const { errors } = usePage().props;
+  const { setPage } = usePage();
+  const { errors, flash } = usePage().props;
   const [isMounted, setIsMounted] = useState(false);
 
   const currentYear = new Date().getFullYear();
@@ -53,20 +56,6 @@ const KelasAddModal = ({ isOpen, onClose }) => {
   const onSubmit = (data) => {
     // eslint-disable-next-line no-undef
     router.post(route("Kelas&Mapel.new"), { ...data, insertFor: "kelas" });
-    if (errors?.addKelas) {
-      Object.keys(errors.addKelas).forEach((key) => {
-        form.setError(key, { message: errors.addKelas[key] });
-        toast({
-          className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
-          variant: "destructive",
-          title: "Save Failed",
-          description: errors.addKelas[key],
-          duration: 5000, //5s
-        });
-      });
-    } else {
-      handleClose();
-    }
   };
   const handleClose = () => {
     onClose();
@@ -83,6 +72,27 @@ const KelasAddModal = ({ isOpen, onClose }) => {
       });
     }
   };
+  useEffect(() => {
+    if (errors) {
+      Object.keys(errors).forEach((key) => {
+        form.setError(key, { message: errors[key] });
+        toast({
+          className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
+          variant: "destructive",
+          title: "Save Failed",
+          description: errors[key],
+          duration: 5000, //5s
+          onClose: () => setPage((prev) => ({ ...prev, errors: null })),
+        });
+      });
+    }
+  }, [errors, form, setPage]);
+
+  useEffect(() => {
+    if (flash.success) {
+      onClose();
+    }
+  }, [flash.success, onClose]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -93,14 +103,16 @@ const KelasAddModal = ({ isOpen, onClose }) => {
   }
   return (
     <Modal
-      title="Add New Kelas"
+      title="Tambah Kelas Baru"
       isOpen={isOpen}
       onClose={handleClose}
+      size="lg"
     >
       <div className="w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onErrorSubmit)}>
             <div className="space-y-6">
+              <Separator />
               <InputForm
                 form={form}
                 name={"nama"}
@@ -152,8 +164,14 @@ const KelasAddModal = ({ isOpen, onClose }) => {
                   label: data.nama_guru,
                 }))}
               />
-
-              <Button type="submit">Save</Button>
+              <h3 className="text-lg font-semibold leading-none tracking-tight">Tambah Mata Pelajaran</h3>
+              <Separator />
+              <div className="">
+                <AddGuruMapel form={form} />
+              </div>
+              <div className="flex justify-end">
+                <Button type="submit">Save</Button>
+              </div>
             </div>
           </form>
         </Form>

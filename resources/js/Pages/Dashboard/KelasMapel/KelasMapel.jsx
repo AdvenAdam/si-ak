@@ -7,13 +7,17 @@ import { useEffect, useState } from "react";
 import { useGuruDataStore } from "@/hooks/useGuruData";
 import KelasAddModal from "@/Components/tables/kelas-tables/kelas-add-modal";
 import { MapelAddModal } from "@/Components/tables/mapel-tables/mapel-add-modal";
+import { useKelasDataStore } from "@/hooks/useKelasData";
+import { useMapelDataStore } from "@/hooks/useMapelData";
 
 export default function KelasMapel(props) {
   const [mapelModal, setMapelModal] = useState(false);
   const [kelasModal, setKelasModal] = useState(false);
-  useEffect(() => {
-    props.guru && useGuruDataStore.setState({ guru: props.guru });
-  }, [props.guru]);
+  // useEffect(() => {
+  //   props.guru && useGuruDataStore.setState({ guru: props.guru });
+  //   props.kelas && useKelasDataStore.setState({ kelas: props.kelas });
+  //   props.mapel && useMapelDataStore.setState({ mapel: props.mapel });
+  // }, [props.guru, props.kelas, props.mapel]);
   return (
     <AuthenticatedLayout user={props.auth.user}>
       <Head title="Kelas & Mapel" />

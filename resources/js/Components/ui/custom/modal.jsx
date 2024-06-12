@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
 
-export const Modal = ({ title, description, isOpen, onClose, children }) => {
+export const Modal = ({ size = "default", title, description, isOpen, onClose, children }) => {
   const onChange = (open) => {
     if (!open) {
       onClose();
@@ -13,7 +13,7 @@ export const Modal = ({ title, description, isOpen, onClose, children }) => {
       open={isOpen}
       onOpenChange={onChange}
     >
-      <DialogContent>
+      <DialogContent size={size}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

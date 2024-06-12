@@ -34,7 +34,7 @@ export default function Sidebar({ className }) {
     },
     {
       title: "Nilai",
-      href: "/dashboard/nilai",
+      href: "/dashboard/Penilaian",
       icon: "kanban",
       label: "kanban",
     },

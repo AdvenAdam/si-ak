@@ -3,10 +3,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 const InputSelect = ({ name, form, label, placeholder, data, ...props }) => {
   // Create a map from value to label for quick lookup
-  const valueToLabelMap = data.reduce((acc, item) => {
-    acc[item.value] = item.label;
-    return acc;
-  }, {});
+  if (data) {
+    const valueToLabelMap = data.reduce((acc, item) => {
+      acc[item.value] = item.label;
+      return acc;
+    }, {});
+  }
 
   return (
     <FormField
@@ -21,23 +23,22 @@ const InputSelect = ({ name, form, label, placeholder, data, ...props }) => {
             {...props}
           >
             <FormControl>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder={placeholder || label}>
-                  {field.value && valueToLabelMap[field.value]}
-                </SelectValue>
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder || label} />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="space-y-1">
+            <SelectContent>
               {data.map((item, index) => (
-                <SelectItem
+                <div
+                  className=""
                   key={index}
-                  value={item.value}
                 >
-                  {item.label}
-                </SelectItem>
+                  <SelectItem value={String(item.value)}>{item.label}</SelectItem>
+                </div>
               ))}
             </SelectContent>
           </Select>
+
           <FormMessage />
         </FormItem>
       )}
