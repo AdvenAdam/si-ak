@@ -16,6 +16,7 @@ const formSchema = z.object({
 
 export const MapelAddModal = ({ isOpen, onClose }) => {
   const { errors } = usePage().props;
+  const { setPage } = usePage();
   const [isMounted, setIsMounted] = useState(false);
 
   const form = useForm({
@@ -28,20 +29,6 @@ export const MapelAddModal = ({ isOpen, onClose }) => {
   const onSubmit = (data) => {
     // eslint-disable-next-line no-undef
     router.post(route("Kelas&Mapel.new"), { ...data, insertFor: "mapel" });
-    if (errors?.addMapel) {
-      Object.keys(errors.addMapel).forEach((key) => {
-        form.setError(key, { message: errors.addMapel[key] });
-        toast({
-          className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
-          variant: "destructive",
-          title: "Save Failed",
-          description: errors.addMapel[key],
-          duration: 5000, //5s
-        });
-      });
-    } else {
-      handleClose();
-    }
   };
   const handleClose = () => {
     onClose();
@@ -58,6 +45,24 @@ export const MapelAddModal = ({ isOpen, onClose }) => {
       });
     }
   };
+  useEffect(() => {
+    if (errors) {
+      Object.keys(errors).forEach((key) => {
+        form.setError(key, { message: errors[key] });
+        toast({
+          className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
+          variant: "destructive",
+          title: "Save Failed",
+          description: errors[key],
+          duration: 5000, //5s
+          onClose: () => setPage((prev) => ({ ...prev, errors: null })),
+        });
+      });
+    }
+    if (Object.keys(errors).length === 0) {
+      form.reset();
+    }
+  }, [errors, form, setPage]);
 
   useEffect(() => {
     setIsMounted(true);

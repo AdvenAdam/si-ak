@@ -4,9 +4,9 @@ import { BreadcrumbComponent } from "@/Components/ui/custom/breadcrumb";
 import { MapelTable } from "@/Components/tables/mapel-tables/mapel-table";
 import { KelasTable } from "@/Components/tables/kelas-tables/kelas-table";
 import { useEffect, useState } from "react";
-import { MapelAddModal } from "@/Components/tables/mapel-tables/mapel-add-modal";
 import { useGuruDataStore } from "@/hooks/useGuruData";
 import KelasAddModal from "@/Components/tables/kelas-tables/kelas-add-modal";
+import { MapelAddModal } from "@/Components/tables/mapel-tables/mapel-add-modal";
 
 export default function KelasMapel(props) {
   const [mapelModal, setMapelModal] = useState(false);

@@ -33,14 +33,8 @@ export default function Sidebar({ className }) {
       label: "kelas & mapel",
     },
     {
-      title: "Profile",
-      href: "/dashboard/profile",
-      icon: "profile",
-      label: "profile",
-    },
-    {
-      title: "Kanban",
-      href: "/dashboard/kanban",
+      title: "Nilai",
+      href: "/dashboard/nilai",
       icon: "kanban",
       label: "kanban",
     },
@@ -49,6 +43,12 @@ export default function Sidebar({ className }) {
       href: "/",
       icon: "login",
       label: "login",
+    },
+    {
+      title: "Profile",
+      href: "/dashboard/profile",
+      icon: "profile",
+      label: "profile",
     },
   ];
   return (

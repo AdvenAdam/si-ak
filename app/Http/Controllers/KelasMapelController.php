@@ -26,16 +26,12 @@ class KelasMapelController extends Controller
             return back()->withErrors([$th->getMessage()]);
         }
     }
-    function store(Request $request): RedirectResponse
+    function store(Request $request)
     {
         if ($request['insertFor'] == 'mapel') {
             $this->insertMapel($request);
-            return redirect()->route('Kelas&Mapel.index')
-                ->with('success', 'Mata Pelajaran Save successfully');
         } else if ($request['insertFor'] == 'kelas') {
             $this->insertKelas($request);
-            return redirect()->route('Kelas&Mapel.index')
-                ->with('success', 'Kelas Save successfully');
         }
     }
     function insertMapel($request)
@@ -45,14 +41,14 @@ class KelasMapelController extends Controller
                 'nama' => 'required|unique:mapels,nama_mata_pelajaran',
             ]);
         } catch (ValidationException $e) {
-            return redirect()->route('Kelas&Mapel.index')
-                ->withErrors($e->errors(), 'addMapel');
+            return back()->withErrors($e->validator->errors())->withInput();
         }
         Mapel::create([
             'nama_mata_pelajaran' => $request['nama'],
         ]);
+
         return redirect()->route('Kelas&Mapel.index')
-            ->with('success', 'Mata Pelajaran Save successfully');
+            ->with('success', 'Mata Pelajaran Savesu successfully');
     }
 
     function insertKelas($request)
@@ -62,8 +58,7 @@ class KelasMapelController extends Controller
                 'nama' => 'required|unique:kelas,nama_kelas',
             ]);
         } catch (ValidationException $e) {
-            return redirect()->route('Kelas&Mapel.index')
-                ->withErrors($e->errors(), 'addKelas');
+            return back()->withErrors($e->validator->errors())->withInput();
         }
         Kelas::create([
             'nama_kelas' => $request['nama'],
@@ -71,7 +66,7 @@ class KelasMapelController extends Controller
             'tahun_ajaran' => $request['tahun_mulai'] . '/' . $request['tahun_selesai'],
         ]);
         return redirect()->route('Kelas&Mapel.index')
-            ->with('success', 'Mata Pelajaran Save successfully');
+            ->with('success', 'Kelas Save successfully');
     }
 
     function destroyMapel($id): RedirectResponse
