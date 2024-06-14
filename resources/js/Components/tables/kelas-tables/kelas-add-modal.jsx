@@ -18,7 +18,7 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Name Belum diisi." })
     .transform((value) => value?.trim()),
-  guru_id: z
+  wali_guru_id: z
     .string()
     .min(1, { message: "Wali Guru Belum diisi." })
     .transform((value) => value?.trim()),
@@ -27,9 +27,8 @@ const formSchema = z.object({
 });
 
 const KelasAddModal = ({ isOpen, onClose }) => {
-  const { guru } = useGuruDataStore();
   const { setPage } = usePage();
-  const { errors, flash } = usePage().props;
+  const { errors, flash, guru } = usePage().props;
   const [isMounted, setIsMounted] = useState(false);
 
   const currentYear = new Date().getFullYear();
@@ -47,13 +46,17 @@ const KelasAddModal = ({ isOpen, onClose }) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       nama: "",
-      guru_id: "",
+      wali_guru_id: "",
       tahun_mulai: "",
       tahun_selesai: "",
+      guru_id: "",
+      mapel_id: "",
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
+    const data = form.getValues();
+    console.log("🚀 ~ onSubmit ~ data:", data);
     // eslint-disable-next-line no-undef
     router.post(route("Kelas&Mapel.new"), { ...data, insertFor: "kelas" });
   };
@@ -62,6 +65,7 @@ const KelasAddModal = ({ isOpen, onClose }) => {
   };
 
   const onErrorSubmit = (errors) => {
+    console.log("🚀 ~ onErrorSubmit ~ errors:", errors);
     if (errors) {
       toast({
         className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
@@ -106,7 +110,7 @@ const KelasAddModal = ({ isOpen, onClose }) => {
       title="Tambah Kelas Baru"
       isOpen={isOpen}
       onClose={handleClose}
-      size="lg"
+      size="full"
     >
       <div className="w-full">
         <Form {...form}>
@@ -156,7 +160,7 @@ const KelasAddModal = ({ isOpen, onClose }) => {
               </div>
               <InputSelect
                 form={form}
-                name={"guru_id"}
+                name={"wali_guru_id"}
                 label={"Guru Wali Kelas"}
                 placeholder={"Pilih Guru Wali"}
                 data={guru.map((data) => ({

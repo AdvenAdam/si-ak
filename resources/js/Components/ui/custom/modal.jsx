@@ -1,5 +1,13 @@
 "use client";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/Components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogTitle,
+} from "@/Components/ui/dialog";
 
 export const Modal = ({ size = "default", title, description, isOpen, onClose, children }) => {
   const onChange = (open) => {
@@ -13,6 +21,7 @@ export const Modal = ({ size = "default", title, description, isOpen, onClose, c
       open={isOpen}
       onOpenChange={onChange}
     >
+      {/* <DialogOverlay> */}
       <DialogContent size={size}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -20,6 +29,8 @@ export const Modal = ({ size = "default", title, description, isOpen, onClose, c
         </DialogHeader>
         <div>{children}</div>
       </DialogContent>
+      <DialogFooter></DialogFooter>
+      {/* </DialogOverlay> */}
     </Dialog>
   );
 };

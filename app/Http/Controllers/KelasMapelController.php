@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Mapel;
+use App\Models\PivotGuruKelas;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Response;
 use Inertia\Inertia;
@@ -71,11 +73,29 @@ class KelasMapelController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->validator->errors())->withInput();
         }
-        Kelas::create([
-            'nama_kelas' => $request['nama'],
-            'guru_id' => $request['guru_id'],
-            'tahun_ajaran' => $request['tahun_mulai'] . '/' . $request['tahun_selesai'],
-        ]);
+
+        try {
+            DB::beginTransaction();
+            $kelas = Kelas::create([
+                'nama_kelas' => $request['nama'],
+                'guru_id' => $request['wali_guru_id'],
+                'tahun_ajaran' => $request['tahun_mulai'] . '/' . $request['tahun_selesai'],
+            ]);
+            $mapel = $request['mapel_id'];
+            foreach ($mapel as $key => $value) {
+                $pivot = PivotGuruKelas::create([
+                    'mapel_id' => $value,
+                    'kelas_id' => $kelas->id,
+                    'guru_id' => $request['guru_id'][$key],
+                ]);
+            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('Kelas&Mapel.index')
+                ->with('error', 'Kelas Gagal ditambahkan.');
+            throw $th;
+        }
         return redirect()->route('Kelas&Mapel.index')
             ->with('success', 'Kelas Berhasil ditambahkan.');
     }
@@ -94,10 +114,16 @@ class KelasMapelController extends Controller
     function destroyKelas($id): RedirectResponse
     {
         try {
+            DB::beginTransaction();
+
+            PivotGuruKelas::where('kelas_id', $id)->delete();
+
             Kelas::find($id)->delete();
+            DB::commit();
             return redirect()->route('Kelas&Mapel.index')
                 ->with('success', 'Kelas Berhasil dihapus.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->route('Kelas&Mapel.index')
                 ->with('error', 'Kelas Gagal dihapus.');
         }

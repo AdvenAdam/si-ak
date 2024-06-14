@@ -9,11 +9,9 @@ const AddGuruMapel = ({ form }) => {
   const { guru, mapel } = usePage().props;
   const [generateCount, setGenerateCount] = useState(1);
   useEffect(() => {
-    mapel && useMapelDataStore.setState({ mapel });
-    guru && useGuruDataStore.setState({ guru });
-  }, []);
-  const { mapel: dats } = useMapelDataStore();
-  console.log("🚀 ~ AddGuruMapel ~ dats:", dats);
+    mapel && useMapelDataStore.setState({ mapel: mapel });
+  }, [mapel]);
+
   const handleClick = (action) => {
     if (action === "add") {
       setGenerateCount(generateCount + 1);
@@ -59,39 +57,40 @@ const AddGuruMapel = ({ form }) => {
 };
 
 export const SelectComponent = ({ index, form }) => {
-  const { guru } = useGuruDataStore();
-  const { mapel } = useMapelDataStore();
-
+  const { guru, mapel: optMapel } = usePage().props;
+  const [optGuru, setOptGuru] = useState(guru);
   const handleMapelChange = (e) => {
-    const selectedMapelId = e;
-    form.setValue(`mapel_id[${index}]`, selectedMapelId);
+    form.setValue(`guru_id[${index}]`, "");
+    form.setValue(`mapel_id[${index}]`, e);
 
-    const selectedMapel = mapel.find((mapel) => mapel.id == selectedMapelId);
-    console.log("🚀 ~ handleMapelChange ~ selectedMapel:", selectedMapel);
-    if (selectedMapel) {
-      const filteredGuru = guru.filter((guru) => guru.mapel_id === selectedMapel.id);
-      console.log("🚀 ~ handleMapelChange ~ filteredGuru:", filteredGuru);
-      useGuruDataStore.setState({ guru: filteredGuru });
-      useMapelDataStore.setState({ mapel: mapel.filter((mapel) => mapel.id !== selectedMapel.id) });
-    }
-    console.log(
-      "🚀 ~ SelectComponent ~ mapelData:",
-      mapel.filter((mapel) => mapel.id != selectedMapelId)
-    );
+    const selectedMapelId = e;
+    const selectedMapel = optMapel.find((mapel) => mapel.id == selectedMapelId);
+
+    const filteredGuru = guru.filter((guru) => guru.mapel_id == selectedMapel?.id);
+    setOptGuru(filteredGuru);
   };
+  const recentOptMapel = form.getValues(`mapel_id[]`);
 
   return (
-    <div className="grid grid-cols-2 space-x-2">
+    <div className="grid grid-cols-2 space-x-4">
       <InputSelect
         form={form}
         name={`mapel_id[${index}]`}
         label={"Mata Pelajaran"}
         placeholder={"Pilih Mata Pelajaran"}
         onValueChange={handleMapelChange}
-        data={mapel.map((mapel) => ({
-          value: mapel.id,
-          label: mapel.nama_mata_pelajaran,
-        }))}
+        required
+        data={optMapel
+          .filter(
+            (mapel) =>
+              !recentOptMapel?.includes(String(mapel.id)) ||
+              recentOptMapel === "" ||
+              form.getValues(`mapel_id[${index}]`) == mapel.id
+          )
+          .map((mapel) => ({
+            value: mapel.id,
+            label: mapel.nama_mata_pelajaran,
+          }))}
       />
 
       <InputSelect
@@ -99,10 +98,12 @@ export const SelectComponent = ({ index, form }) => {
         name={`guru_id[${index}]`}
         label={"Guru"}
         placeholder={"Pilih Guru"}
-        data={guru.map((guru) => ({
+        disabled={!form.getValues(`mapel_id[${index}]`)}
+        data={optGuru.map((guru) => ({
           value: guru.id,
           label: guru.nama_guru,
         }))}
+        required
       />
     </div>
   );

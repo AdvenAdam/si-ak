@@ -24,4 +24,9 @@ class Kelas extends Model
     {
         return $this->belongsTo(Siswa::class);
     }
+
+    public function Guru_Kelas(): BelongsTo
+    {
+        return $this->belongsTo(PivotGuruKelas::class);
+    }
 }

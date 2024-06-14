@@ -33,4 +33,8 @@ class Guru extends Model
     {
         return $this->BelongsTo(Mapel::class);
     }
+    public function Guru_Kelas(): BelongsTo
+    {
+        return $this->belongsTo(PivotGuruKelas::class);
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\KelasMapelController;
-use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -28,8 +28,8 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::delete('/kelas/{kelas}', [KelasMapelController::class, 'destroyKelas'])->name('kelas.destroy');
     });
 
-    Route::group(['prefix' => 'Penilaian'], function () {
-        Route::get('/', [PenilaianController::class, 'index'])->name('Penilaian.index');
+    Route::group(['prefix' => 'nilai'], function () {
+        Route::get('/', [NilaiController::class, 'index'])->name('nilai.index');
     });
 });
 

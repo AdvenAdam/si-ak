@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('nilais', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('penilaian_id')->constrained('penilaians');
             $table->foreignId('mapel_id')->constrained('mapels');
             $table->foreignId('siswa_id')->constrained('siswas');
+            $table->foreignId('guru_id')->constrained('gurus');
+            $table->foreignId('kelas_id')->constrained('kelas');
+            $table->string('semester')->nullable();
+            $table->string('tahun_ajaran')->nullable();
             $table->timestamps();
         });
     }

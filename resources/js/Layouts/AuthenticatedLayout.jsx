@@ -17,7 +17,6 @@ export default function Authenticated({ user, children }) {
   const { flash } = usePage().props;
   useEffect(() => {
     if (flash?.success || flash?.error) {
-      console.log("Called");
       toast({
         className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
         variant: flash.success ? "success" : "destructive",

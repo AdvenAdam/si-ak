@@ -9,14 +9,13 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class PenilaianController extends Controller
+class NilaiController extends Controller
 {
     function index(): Response
     {
         try {
             $user = auth()->user();
-            dd($user);
-            return Inertia::render('Dashboard/KelasMapel/KelasMapel', [
+            return Inertia::render('Dashboard/Nilai/Nilai', [
                 'kelas' => Kelas::with('guru')
                     ->orderBy('tahun_ajaran', 'desc')
                     ->orderBy('nama_kelas')
