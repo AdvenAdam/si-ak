@@ -9,43 +9,55 @@ import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm as inertiaForm, router } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-const formSchema = z
-  .object({
-    nama: z.string().min(1, { message: "Name is required" }),
-    nisn: z.string().min(1, { message: "NISN is required" }).regex(/^\d+$/, { message: "NISN must be a number" }),
-    alamat: z.string().optional(),
-    tanggal_lahir: z.string().min(1, { message: "Tanggal Lahir is required" }),
-    kelas_id: z.string().min(1, { message: "Class is required" }),
-    email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
-    password: z.string().min(1, { message: "Password is required" }).min(8, "Password must be at least 8 characters"),
-    confirm: z
-      .string()
-      .min(1, { message: "Confirm password is required" })
-      .min(8, "Password must be at least 8 characters"),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords don't match",
-    path: ["confirm"],
-  });
 
-const SiswaForm = () => {
+const SiswaForm = ({ data }) => {
+  const formSchema = z
+    .object({
+      nama: z.string().min(1, { message: "Name is required" }),
+      nisn: z.string().min(1, { message: "NISN is required" }).regex(/^\d+$/, { message: "NISN must be a number" }),
+      alamat: z.string().optional(),
+      tanggal_lahir: z.string().min(1, { message: "Tanggal Lahir is required" }),
+      kelas_id: z.string().min(1, { message: "Class is required" }),
+      email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
+      ...(!data && {
+        password: z
+          .string()
+          .min(1, { message: "Password is required" })
+          .min(8, "Password must be at least 8 characters"),
+        confirm: z
+          .string()
+          .min(1, { message: "Confirm password is required" })
+          .min(8, "Password must be at least 8 characters"),
+      }),
+    })
+    .refine(
+      (data) => {
+        if (!data.password || !data.confirm) return true;
+        return data.password === data.confirm;
+      },
+      {
+        message: "Passwords don't match",
+        path: ["confirm"],
+      }
+    );
+  // NOTE is User Exist form change to edit form
+  const { user } = data ?? {};
   const { kelas } = useKelasDataStore();
-
   const { post, errors, recentlySuccessful } = inertiaForm();
   const hasErrors = Boolean(Object.keys(errors).length);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: user?.email || "",
+      nama: user?.detailUser?.nama || "",
+      nisn: String(user?.detailUser?.nisn) || "",
+      alamat: user?.detailUser?.alamat || "",
+      tanggal_lahir: user?.detailUser?.tanggal_lahir || "",
+      kelas_id: user ? String(user?.detailUser?.kelas_id) : "",
       password: "",
-      nama: "",
-      nisn: "",
-      alamat: "",
-      tanggal_lahir: "",
-      kelas_id: "",
       confirm: "",
     },
   });
@@ -60,7 +72,7 @@ const SiswaForm = () => {
       toast({
         className: cn("top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4"),
         variant: "destructive",
-        title: "Login Failed",
+        title: "Save Failed",
         description: <ol>{toastMessage}</ol>,
         duration: 5000, //5s
       });
@@ -71,8 +83,18 @@ const SiswaForm = () => {
   }, [hasErrors, errors, recentlySuccessful, form]);
 
   const onSubmit = (data) => {
-    // eslint-disable-next-line no-undef
-    post(route("user.store", { ...data, role_id: 1 }));
+    console.log("🚀 ~ onSubmit ~ data:", data);
+    try {
+      if (user) {
+        // eslint-disable-next-line no-undef
+        router.patch(route("user.update", { user: user.id }), { ...data, role_id: 1 });
+      } else {
+        // eslint-disable-next-line no-undef
+        post(route("user.store", { ...data, role_id: 1 }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const onErrorSubmit = (errors) => {
     if (errors) {
@@ -118,7 +140,7 @@ const SiswaForm = () => {
                 placeholder={"Pilih Kelas"}
                 data={kelas.map((data) => ({
                   value: data.id,
-                  label: data.nama_kelas,
+                  label: `${data.nama_kelas} (${data.tahun_ajaran})`,
                 }))}
               />
               <InputForm
@@ -138,31 +160,10 @@ const SiswaForm = () => {
                 className="w-full"
               />
             </div>
-            <div className="space-y-2">
-              <CardTitle>Informasi Akun</CardTitle>
-              <CardDescription>{`Make changes to your Account here. Click save when you're done.`}</CardDescription>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 small:grid-cols-1">
-              <InputForm
-                form={form}
-                name={"email"}
-                label={"Email"}
-                type={"text"}
-              />
-              <InputForm
-                form={form}
-                name={"password"}
-                label={"Password"}
-                type={"password"}
-              />
-              <InputForm
-                form={form}
-                name={"confirm"}
-                label={"Confirm Password"}
-                type={"password"}
-              />
-            </div>
+            <AccountForm
+              form={form}
+              user={user}
+            />
           </CardContent>
           <CardFooter>
             <Button type="submit">Save</Button>
@@ -172,5 +173,49 @@ const SiswaForm = () => {
     </Card>
   );
 };
+const AccountForm = ({ form, user }) => {
+  const [updatePassword, setUpdatePassword] = useState(user.length);
+  return (
+    <>
+      <div className="space-y-2">
+        <CardTitle>Informasi Akun</CardTitle>
+        <CardDescription>{`Make changes to your Account here. Click save when you're done.`}</CardDescription>
+      </div>
 
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 small:grid-cols-1">
+        <InputForm
+          form={form}
+          name={"email"}
+          label={"Email"}
+          type={"text"}
+        />
+        {updatePassword && (
+          <>
+            <InputForm
+              form={form}
+              name={"password"}
+              label={"Password"}
+              type={"password"}
+            />
+            <InputForm
+              form={form}
+              name={"confirm"}
+              label={"Confirm Password"}
+              type={"password"}
+            />
+          </>
+        )}
+      </div>
+      <Button
+        variant={updatePassword ? "outline" : "destructive"}
+        onClick={(e) => {
+          e.preventDefault();
+          setUpdatePassword(!updatePassword);
+        }}
+      >
+        {updatePassword ? "Cancel" : "Update Password"}
+      </Button>
+    </>
+  );
+};
 export default SiswaForm;

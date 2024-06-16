@@ -3,54 +3,58 @@ import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { useSidebar } from "@/hooks/useSidebar";
 import DashboardNav from "./dashboard-nav";
+import { usePage } from "@inertiajs/react";
 
 export default function Sidebar({ className }) {
   const { isMinimized, toggle } = useSidebar();
   const [status, setStatus] = useState(false);
-
+  const { auth } = usePage().props;
   const handleToggle = () => {
     setStatus(true);
     toggle();
     setTimeout(() => setStatus(false), 500);
   };
-  const navItems = [
-    {
-      title: "Dashboard",
-      href: "/dashboard",
-      icon: "dashboard",
-      label: "Dashboard",
-    },
-    {
-      title: "User",
-      href: "/dashboard/user",
-      icon: "user",
-      label: "user",
-    },
-    {
-      title: "Kelas & Mapel",
-      href: "/dashboard/Kelas&Mapel",
-      icon: "shapes",
-      label: "kelas & mapel",
-    },
-    {
-      title: "Nilai",
-      href: "/dashboard/nilai",
-      icon: "kanban",
-      label: "kanban",
-    },
-    {
-      title: "Login",
-      href: "/",
-      icon: "login",
-      label: "login",
-    },
-    {
-      title: "Profile",
-      href: "/dashboard/profile",
-      icon: "profile",
-      label: "profile",
-    },
-  ];
+  let navItems = [];
+  if (auth.user.role_id === 3) {
+    navItems = [
+      {
+        title: "Dashboard",
+        href: "/dashboard",
+        icon: "dashboard",
+        label: "Dashboard",
+      },
+      {
+        title: "User",
+        href: "/dashboard/user",
+        icon: "user",
+        label: "user",
+      },
+      {
+        title: "Kelas & Mapel",
+        href: "/dashboard/Kelas&Mapel",
+        icon: "shapes",
+        label: "kelas & mapel",
+      },
+      {
+        title: "Nilai",
+        href: "/dashboard/nilai",
+        icon: "kanban",
+        label: "kanban",
+      },
+      {
+        title: "Kenaikan Kelas",
+        href: "/dashboard/kenaikan-kelas",
+        icon: "school",
+        label: "Kenaikan Kelas",
+      },
+      {
+        title: "Profile",
+        href: "/dashboard/profile",
+        icon: "profile",
+        label: "profile",
+      },
+    ];
+  }
   return (
     <nav
       className={cn(

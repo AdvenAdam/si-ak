@@ -1,4 +1,7 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { CellAction } from "./cell-action";
+import { getInitials } from "@/lib/getInitials";
+import { Button } from "@/Components/ui/button";
 
 export const columns = [
   {
@@ -9,6 +12,22 @@ export const columns = [
   {
     accessorKey: "username",
     header: "NAME",
+    cell: ({ row }) => {
+      const name = row.getValue("username");
+      return (
+        <div className="flex items-center space-x-1">
+          <Button
+            variant="secondary"
+            className="relative h-8 w-8 rounded-full"
+          >
+            <Avatar className="h-8 w-8 flex items-center">
+              <AvatarFallback>{getInitials(name)}</AvatarFallback>
+            </Avatar>
+          </Button>
+          <p>{name}</p>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "email",

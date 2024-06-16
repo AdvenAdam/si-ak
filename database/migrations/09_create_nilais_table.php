@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('siswa_id')->constrained('siswas');
             $table->foreignId('guru_id')->constrained('gurus');
             $table->foreignId('kelas_id')->constrained('kelas');
+            $table->string('nilai')->nullable();
             $table->string('semester')->nullable();
             $table->string('tahun_ajaran')->nullable();
             $table->timestamps();

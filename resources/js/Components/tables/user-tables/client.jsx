@@ -9,11 +9,11 @@ import { Heading } from "@/Components/ui/custom/heading";
 
 export const UserClient = ({ data }) => {
   return (
-    <>
-      <div className="flex items-start justify-between">
+    <div className="flex-col space-y-6">
+      <div className="flex items-start justify-between space-y-4">
         <Heading
           title={`Users (${data.length})`}
-          description="Manage users (Client side table functionalities.)"
+          description="Manage users "
         />
         <Button
           className="text-xs md:text-sm"
@@ -28,6 +28,6 @@ export const UserClient = ({ data }) => {
         columns={columns}
         data={data}
       />
-    </>
+    </div>
   );
 };

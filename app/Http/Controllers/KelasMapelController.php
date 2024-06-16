@@ -20,7 +20,7 @@ class KelasMapelController extends Controller
         // NOTE : Reformat Data
         try {
             return Inertia::render('Dashboard/KelasMapel/KelasMapel', [
-                'kelas' => Kelas::with('guru')
+                'kelas' => Kelas::with('guruMapel')
                     ->orderBy('tahun_ajaran', 'desc')
                     ->orderBy('nama_kelas')
                     ->get(),
@@ -42,6 +42,16 @@ class KelasMapelController extends Controller
             $this->insertKelas($request);
         }
     }
+    function update(Request $request)
+    {
+        // dd($request);
+        if ($request['insertFor'] == 'mapel') {
+            $this->updateMapel($request);
+        } else if ($request['insertFor'] == 'kelas') {
+            $this->insertKelas($request);
+        }
+    }
+
     function insertMapel($request)
     {
         try {
@@ -60,6 +70,16 @@ class KelasMapelController extends Controller
 
         return redirect()->route('Kelas&Mapel.index')
             ->with('success', 'Mata Pelajaran Berhasil ditambahkan.');
+    }
+    function updateMapel($request)
+    {
+        $mapel = Mapel::find($request['id']);
+        $mapel->update([
+            'nama_mata_pelajaran' => $request['nama'],
+        ]);
+
+        return redirect()->route('Kelas&Mapel.index')
+            ->with('success', 'Mata Pelajaran Berhasil diubah.');
     }
 
     function insertKelas($request)

@@ -11,10 +11,12 @@ import {
 import { router } from "@inertiajs/react";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useState } from "react";
+import { MapelAddModal } from "./mapel-add-modal";
 
 export const MapelCellAction = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [mapelModal, setMapelModal] = useState(false);
 
   const onConfirm = async () => {
     setLoading(true);
@@ -37,6 +39,11 @@ export const MapelCellAction = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
       />
+      <MapelAddModal
+        isOpen={mapelModal}
+        onClose={() => setMapelModal(false)}
+        data={data}
+      />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -50,7 +57,7 @@ export const MapelCellAction = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem onClick={() => router.get(`/dashboard/user/update/${data.id}`)}>
+          <DropdownMenuItem onClick={() => setMapelModal(true)}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>

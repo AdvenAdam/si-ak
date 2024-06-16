@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kelas extends Model
 {
@@ -15,18 +17,23 @@ class Kelas extends Model
         'guru_id'
     ];
 
-    public function Guru(): BelongsTo
+    public function wali(): BelongsTo
     {
-        return $this->belongsTo(Guru::class);
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 
-    public function Siswa(): BelongsTo
+    public function siswa(): HasMany
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->hasMany(Siswa::class);
     }
 
-    public function Guru_Kelas(): BelongsTo
+    public function guruMapel(): BelongsToMany
     {
-        return $this->belongsTo(PivotGuruKelas::class);
+        return $this->BelongsToMany(Guru::class);
+    }
+
+    public function Mapel(): BelongsToMany
+    {
+        return $this->BelongsToMany(Mapel::class, 'guru_kelas', 'kelas_id', 'mapel_id');
     }
 }

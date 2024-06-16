@@ -8,8 +8,11 @@ import {
   BreadcrumbSeparator,
 } from "@/Components/ui/breadcrumb";
 
-export function BreadcrumbComponent() {
-  const pathnames = useMemo(() => window.location.pathname.split("/").filter(Boolean), []);
+export function BreadcrumbComponent({ type }) {
+  const pathnames = useMemo(() => {
+    const path = window.location.pathname.split("/").filter(Boolean);
+    return type === "detail" ? path.slice(0, -1) : path;
+  }, [type]);
 
   return (
     <Breadcrumb>

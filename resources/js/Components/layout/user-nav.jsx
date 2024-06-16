@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
 import { Button } from "@/Components/ui/button";
 import {
@@ -11,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { useUserStore } from "@/hooks/useUser";
+import { getInitials } from "@/lib/getInitials";
 import { router } from "@inertiajs/react";
 export function UserNav() {
   const { user } = useUserStore();
@@ -27,7 +29,7 @@ export function UserNav() {
               src={user?.image ?? ""}
               alt={user?.username ?? ""}
             />
-            <AvatarFallback>{user?.username?.[0]}</AvatarFallback>
+            <AvatarFallback>{getInitials(user?.username)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -44,19 +46,10 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.get(route("profile.edit"))}>
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.post("/logout")}>

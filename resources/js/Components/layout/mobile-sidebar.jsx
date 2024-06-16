@@ -22,28 +22,28 @@ export function MobileSidebar() {
       label: "user",
     },
     {
-      title: "Employee",
-      href: "/dashboard/employee",
-      icon: "employee",
-      label: "employee",
+      title: "Kelas & Mapel",
+      href: "/dashboard/Kelas&Mapel",
+      icon: "shapes",
+      label: "kelas & mapel",
+    },
+    {
+      title: "Nilai",
+      href: "/dashboard/nilai",
+      icon: "kanban",
+      label: "kanban",
+    },
+    {
+      title: "Kenaikan Kelas",
+      href: "/",
+      icon: "school",
+      label: "school",
     },
     {
       title: "Profile",
       href: "/dashboard/profile",
       icon: "profile",
       label: "profile",
-    },
-    {
-      title: "Kanban",
-      href: "/dashboard/kanban",
-      icon: "kanban",
-      label: "kanban",
-    },
-    {
-      title: "Login",
-      href: "/",
-      icon: "login",
-      label: "login",
     },
   ];
   return (

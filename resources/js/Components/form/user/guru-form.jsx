@@ -8,44 +8,57 @@ import { useMapelDataStore } from "@/hooks/useMapelData";
 import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm as inertiaForm } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useForm as inertiaForm, router } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-const formSchema = z
-  .object({
-    nama: z.string().min(1, { message: "Name is required" }),
-    nip: z.string().min(1, { message: "NIP is required" }).regex(/^\d+$/, { message: "NIP must be a number" }),
-    alamat: z.string().optional(),
-    tanggal_lahir: z.string().min(1, { message: "Tanggal Lahir is required" }),
-    mapel_id: z.string().min(1, { message: "Mata Pelajaran is required" }),
-    email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
-    password: z.string().min(1, { message: "Password is required" }).min(8, "Password must be at least 8 characters"),
-    confirm: z
-      .string()
-      .min(1, { message: "Confirm password is required" })
-      .min(8, "Password must be at least 8 characters"),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Passwords don't match",
-    path: ["confirm"],
-  });
 
-const GuruForm = () => {
+const GuruForm = ({ data }) => {
+  const formSchema = z
+    .object({
+      nama: z.string().min(1, { message: "Name is required" }),
+      nip: z.string().min(1, { message: "NIP is required" }).regex(/^\d+$/, { message: "NIP must be a number" }),
+      alamat: z.string().optional(),
+      tanggal_lahir: z.string().min(1, { message: "Tanggal Lahir is required" }),
+      mapel_id: z.string().min(1, { message: "Mata Pelajaran is required" }),
+      email: z.string({ message: "Email is required" }).email({ message: "Email must be a valid email" }),
+      ...(!data && {
+        password: z
+          .string()
+          .min(1, { message: "Password is required" })
+          .min(8, "Password must be at least 8 characters"),
+        confirm: z
+          .string()
+          .min(1, { message: "Confirm password is required" })
+          .min(8, "Password must be at least 8 characters"),
+      }),
+    })
+    .refine(
+      (data) => {
+        if (!data.password || !data.confirm) return true;
+        return data.password === data.confirm;
+      },
+      {
+        message: "Passwords don't match",
+        path: ["confirm"],
+      }
+    );
+  // NOTE is User Exist form change to edit form
+  const { user } = data ?? {};
+  console.log("🚀 ~ GuruForm ~ user:", user);
   const { mapel } = useMapelDataStore();
-
   const { post, errors, recentlySuccessful } = inertiaForm();
   const hasErrors = Boolean(Object.keys(errors).length);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: user?.email || "",
+      nama: user?.guru?.nama_guru || "",
+      nip: String(user?.guru?.nip) || "",
+      alamat: user?.guru?.alamat || "",
+      tanggal_lahir: user?.guru?.tanggal_lahir || "",
+      mapel_id: String(user?.guru?.mapel_id) || "",
       password: "",
-      nama: "",
-      nip: "",
-      alamat: "",
-      tanggal_lahir: "",
-      mapel_id: "",
       confirm: "",
     },
   });
@@ -71,8 +84,18 @@ const GuruForm = () => {
   }, [hasErrors, errors, recentlySuccessful, form]);
 
   const onSubmit = (data) => {
-    // eslint-disable-next-line no-undef
-    post(route("user.store", { ...data, role_id: 2 }));
+    console.log("🚀 ~ onSubmit ~ data:", data);
+    try {
+      if (user) {
+        // eslint-disable-next-line no-undef
+        router.patch(route("user.update", { user: user.id }), { ...data, role_id: 2 });
+      } else {
+        // eslint-disable-next-line no-undef
+        post(route("user.store", { ...data, role_id: 1 }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const onErrorSubmit = (errors) => {
     if (errors) {
@@ -139,28 +162,9 @@ const GuruForm = () => {
               />
             </div>
             <div className="space-y-2">
-              <CardTitle>Informasi Akun</CardTitle>
-              <CardDescription>{`Make changes to your Account here. Click save when you're done.`}</CardDescription>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 small:grid-cols-1">
-              <InputForm
+              <AccountForm
                 form={form}
-                name={"email"}
-                label={"Email"}
-                type={"text"}
-              />
-              <InputForm
-                form={form}
-                name={"password"}
-                label={"Password"}
-                type={"password"}
-              />
-              <InputForm
-                form={form}
-                name={"confirm"}
-                label={"Confirm Password"}
-                type={"password"}
+                user={user}
               />
             </div>
           </CardContent>
@@ -172,5 +176,49 @@ const GuruForm = () => {
     </Card>
   );
 };
+const AccountForm = ({ form, user }) => {
+  const [updatePassword, setUpdatePassword] = useState(user.length);
+  return (
+    <>
+      <div className="space-y-2">
+        <CardTitle>Informasi Akun</CardTitle>
+        <CardDescription>{`Make changes to your Account here. Click save when you're done.`}</CardDescription>
+      </div>
 
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 small:grid-cols-1">
+        <InputForm
+          form={form}
+          name={"email"}
+          label={"Email"}
+          type={"text"}
+        />
+        {updatePassword && (
+          <>
+            <InputForm
+              form={form}
+              name={"password"}
+              label={"Password"}
+              type={"password"}
+            />
+            <InputForm
+              form={form}
+              name={"confirm"}
+              label={"Confirm Password"}
+              type={"password"}
+            />
+          </>
+        )}
+      </div>
+      <Button
+        variant={updatePassword ? "outline" : "destructive"}
+        onClick={(e) => {
+          e.preventDefault();
+          setUpdatePassword(!updatePassword);
+        }}
+      >
+        {updatePassword ? "Cancel" : "Update Password"}
+      </Button>
+    </>
+  );
+};
 export default GuruForm;

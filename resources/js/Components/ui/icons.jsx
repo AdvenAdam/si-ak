@@ -19,6 +19,7 @@ import {
   MoreVertical,
   Pizza,
   Plus,
+  School,
   Settings,
   Shapes,
   SunMedium,
@@ -57,6 +58,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  school: School,
   shapes: Shapes,
   gitHub: ({ ...props }) => (
     <svg

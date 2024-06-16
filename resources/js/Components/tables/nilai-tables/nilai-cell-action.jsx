@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/Components/ui/button";
-import { AlertModal } from "@/Components/ui/custom/alert-modal";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,34 +8,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
+
 import { router } from "@inertiajs/react";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useState } from "react";
 
-export const CellAction = ({ data }) => {
+import { NilaiHandler } from "./nilai-handler";
+
+export const NilaiCellAction = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const onConfirm = async () => {
-    setLoading(true);
-    try {
-      // eslint-disable-next-line no-undef
-      router.delete(route("user.destroy", data.id));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-      setOpen(false);
-    }
-  };
-
   return (
     <>
-      <AlertModal
+      <NilaiHandler
+        data={data}
         isOpen={open}
         onClose={() => setOpen(false)}
-        onConfirm={onConfirm}
-        loading={loading}
       />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -50,11 +39,8 @@ export const CellAction = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem onClick={() => router.get(`/dashboard/user/edit/${data.id}`)}>
-            <Edit className="mr-2 h-4 w-4" /> Update
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" /> Delete
+            <Edit className="mr-2 h-4 w-4" /> Edit
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

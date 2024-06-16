@@ -10,9 +10,13 @@ class Nilai extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'penilaian_id',
+        'guru_id',
         'siswa_id',
-        'mapel_id'
+        'mapel_id',
+        'kelas_id',
+        'nilai',
+        'semester',
+        'tahun_ajaran',
     ];
 
     public function siswa(): BelongsTo

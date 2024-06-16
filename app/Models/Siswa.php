@@ -20,6 +20,13 @@ class Siswa extends Model
         'user_id'
     ];
 
+
+    public function Nilai(): HasMany
+    {
+        return $this->HasMany(Nilai::class);
+    }
+
+
     public function Account(): HasOne
     {
         return $this->hasOne(User::class);
@@ -33,10 +40,6 @@ class Siswa extends Model
         return $this->HasMany(RiwayatKelas::class);
     }
 
-    public function Nilai(): HasMany
-    {
-        return $this->HasMany(Nilai::class);
-    }
 
     public function Pembayaran(): HasMany
     {
