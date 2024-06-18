@@ -34,6 +34,25 @@ class KelasMapelController extends Controller
             ]);
         }
     }
+    function edit(): Response
+    {
+        // NOTE : Reformat Data
+        try {
+            return Inertia::render('Dashboard/KelasMapel/UpdateKelas', [
+                'kelas' => Kelas::with('guruMapel')
+                    ->orderBy('tahun_ajaran', 'desc')
+                    ->orderBy('nama_kelas')
+                    ->get(),
+                'mapel' => Mapel::orderBy('nama_mata_pelajaran')->get(),
+                'guru'  => Guru::with('Mapel')->orderBy('nama_guru')->get(),
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            return Inertia::render('Dashboard/KelasMapel/UpdateKelas', [
+                'error' => $th->getMessage(),
+            ]);
+        }
+    }
     function store(Request $request)
     {
         if ($request['insertFor'] == 'mapel') {
