@@ -26,7 +26,7 @@ const formSchema = z.object({
   tahun_selesai: z.string().min(1, { message: "Tahun Selesai Ajaran Belum diisi." }),
 });
 
-const KelasAddModal = ({ isOpen, onClose }) => {
+const KelasUpdateModal = ({ isOpen, onClose, data }) => {
   const { setPage } = usePage();
   const { errors, flash, guru } = usePage().props;
   const [isMounted, setIsMounted] = useState(false);
@@ -182,4 +182,4 @@ const KelasAddModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default KelasAddModal;
+export default KelasUpdateModal;

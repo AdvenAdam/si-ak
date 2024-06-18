@@ -11,10 +11,12 @@ import {
 import { router } from "@inertiajs/react";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { useState } from "react";
+import KelasUpdateModal from "./kelas-update-modal";
 
 export const KelasCellAction = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
 
   const onConfirm = async () => {
     setLoading(true);
@@ -37,6 +39,11 @@ export const KelasCellAction = ({ data }) => {
         onConfirm={onConfirm}
         loading={loading}
       />
+      <KelasUpdateModal
+        isOpen={updateModal}
+        onClose={setUpdateModal(false)}
+        data={data}
+      />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -50,7 +57,7 @@ export const KelasCellAction = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-          <DropdownMenuItem onClick={() => router.get(`/dashboard/user/update/${data.id}`)}>
+          <DropdownMenuItem onClick={() => setUpdateModal(true)}>
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>

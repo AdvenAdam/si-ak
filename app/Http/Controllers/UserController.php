@@ -251,7 +251,8 @@ class UserController extends Controller
             }
             // NOTE : add admin data
             if ($request->role_id == 3  && !is_null($user)) {
-                $admin = Admin::create([
+                $admin = Admin::where('user_id', $user->id)->first();
+                $admin->update([
                     'user_id' => $user->id,
                     'nama_admin' => $request->nama,
                 ]);

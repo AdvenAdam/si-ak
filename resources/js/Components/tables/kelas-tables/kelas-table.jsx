@@ -6,6 +6,7 @@ import { Heading } from "@/Components/ui/custom/heading";
 import { KelasColumn } from "./kelas-columns";
 
 export const KelasTable = ({ data, setOpenModal }) => {
+  console.log("🚀 ~ KelasTable ~ data:", data);
   return (
     <div className="flex-col space-y-6">
       <div className="flex items-start justify-between">
