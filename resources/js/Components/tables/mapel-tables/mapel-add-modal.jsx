@@ -34,7 +34,6 @@ export const MapelAddModal = ({ isOpen, onClose, data }) => {
       if (nama_mata_pelajaran) {
         // eslint-disable-next-line no-undef
         router.patch(route("Kelas&Mapel.update", { id: id }), { ...payLoad, id: id });
-        console.log("patch");
       } else {
         // eslint-disable-next-line no-undef
         router.post(route("Kelas&Mapel.new"), payLoad);

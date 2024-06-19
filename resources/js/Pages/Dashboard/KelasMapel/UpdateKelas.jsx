@@ -29,12 +29,10 @@ const formSchema = z.object({
   tahun_selesai: z.string().min(1, { message: "Tahun Selesai Ajaran Belum diisi." }),
 });
 
-const KelasUpdateModal = ({ data }) => {
-  console.log("🚀 ~ KelasUpdateModal ~ data:", data);
+const KelasUpdateModal = ({ kelas, guru, mapel }) => {
   const { setPage } = usePage();
-  const { errors, flash, guru, auth } = usePage().props;
-  const [isMounted, setIsMounted] = useState(false);
-
+  const { errors, auth } = usePage().props;
+  const dataKelas = kelas || {};
   const currentYear = new Date().getFullYear();
   const optTahunAjar = () => {
     const next5Year = currentYear + 5;
@@ -49,10 +47,10 @@ const KelasUpdateModal = ({ data }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nama: "",
-      wali_guru_id: "",
-      tahun_mulai: "",
-      tahun_selesai: "",
+      nama: dataKelas?.nama_kelas || "",
+      wali_guru_id: String(dataKelas?.guru_id) || "",
+      tahun_mulai: String(dataKelas?.tahun_ajaran.split("/")[0]) || "",
+      tahun_selesai: String(dataKelas?.tahun_ajaran.split("/")[1]) || "",
       guru_id: "",
       mapel_id: "",
     },
@@ -60,8 +58,13 @@ const KelasUpdateModal = ({ data }) => {
 
   const onSubmit = () => {
     const data = form.getValues();
+    console.log("🚀 ~ onSubmit ~ data:", data);
     // eslint-disable-next-line no-undef
-    router.post(route("Kelas&Mapel.new"), { ...data, insertFor: "kelas" });
+    router.patch(route("Kelas&Mapel.update", { id: dataKelas?.id }), {
+      ...data,
+      insertFor: "kelas",
+      id: dataKelas?.id,
+    });
   };
 
   const onErrorSubmit = (errors) => {
@@ -90,13 +93,6 @@ const KelasUpdateModal = ({ data }) => {
     }
   }, [errors, form, setPage]);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Kelas & Mapel" />
@@ -163,7 +159,10 @@ const KelasUpdateModal = ({ data }) => {
                 <h3 className="text-lg font-semibold leading-none tracking-tight">Tambah Mata Pelajaran</h3>
                 <Separator />
                 <div className="">
-                  <AddGuruMapel form={form} />
+                  <AddGuruMapel
+                    form={form}
+                    data={dataKelas?.guru_mapel || []}
+                  />
                 </div>
                 <div className="flex justify-end">
                   <Button type="submit">Save</Button>

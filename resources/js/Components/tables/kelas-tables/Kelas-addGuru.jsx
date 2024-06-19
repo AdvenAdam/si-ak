@@ -5,12 +5,21 @@ import { useMapelDataStore } from "@/hooks/useMapelData";
 import { usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
-const AddGuruMapel = ({ form }) => {
+const AddGuruMapel = ({ form, data }) => {
   const { guru, mapel } = usePage().props;
-  const [generateCount, setGenerateCount] = useState(1);
+  const [generateCount, setGenerateCount] = useState(data?.length || 1);
   useEffect(() => {
     mapel && useMapelDataStore.setState({ mapel: mapel });
   }, [mapel]);
+
+  useEffect(() => {
+    if (data) {
+      data.map((data, index) => {
+        form.setValue(`mapel_id[${index}]`, String(data?.mapel_id));
+        form.setValue(`guru_id[${index}]`, String(data?.id));
+      });
+    }
+  }, [data]);
 
   const handleClick = (action) => {
     if (action === "add") {

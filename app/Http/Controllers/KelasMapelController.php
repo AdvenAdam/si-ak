@@ -38,17 +38,13 @@ class KelasMapelController extends Controller
     {
         // NOTE : Reformat Data
         try {
-            $data = [
+            return Inertia::render('Dashboard/KelasMapel/UpdateKelas',  [
                 'kelas' => Kelas::with('guruMapel')
                     ->orderBy('tahun_ajaran', 'desc')
                     ->orderBy('nama_kelas')
-                    ->find($kelas->id)
-                    ->get(),
+                    ->find($kelas->id),
                 'mapel' => Mapel::orderBy('nama_mata_pelajaran')->get(),
                 'guru'  => Guru::with('Mapel')->orderBy('nama_guru')->get(),
-            ];
-            return Inertia::render('Dashboard/KelasMapel/UpdateKelas', [
-                'data' => $data,
             ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
@@ -67,11 +63,10 @@ class KelasMapelController extends Controller
     }
     function update(Request $request)
     {
-        // dd($request);
         if ($request['insertFor'] == 'mapel') {
             $this->updateMapel($request);
         } else if ($request['insertFor'] == 'kelas') {
-            $this->insertKelas($request);
+            $this->updateKelas($request);
         }
     }
 
@@ -142,6 +137,37 @@ class KelasMapelController extends Controller
         }
         return redirect()->route('Kelas&Mapel.index')
             ->with('success', 'Kelas Berhasil ditambahkan.');
+    }
+
+    function updateKelas($request)
+    {
+        try {
+            DB::beginTransaction();
+            $kelas = Kelas::find($request['id']);
+            $kelas->update([
+                'nama_kelas' => $request['nama'],
+                'guru_id' => $request['wali_guru_id'],
+                'tahun_ajaran' => $request['tahun_mulai'] . '/' . $request['tahun_selesai'],
+            ]);
+            $mapel = $request['mapel_id'];
+            $pivot = PivotGuruKelas::where('kelas_id', $request['id'])->delete();
+            foreach ($mapel as $key => $value) {
+                PivotGuruKelas::create([
+                    'mapel_id' => $value,
+                    'kelas_id' => $request['id'],
+                    'guru_id' => $request['guru_id'][$key],
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('Kelas&Mapel.index')
+                ->with('success', 'Kelas Berhasil diubah.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th->getMessage());
+            return redirect()->route('Kelas&Mapel.index')
+                ->with('error', 'Kelas Gagal diubah.');
+            throw $th;
+        }
     }
 
     function destroyMapel($id): RedirectResponse
