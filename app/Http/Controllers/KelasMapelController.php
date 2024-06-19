@@ -131,6 +131,7 @@ class KelasMapelController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th->getMessage());
             return redirect()->route('Kelas&Mapel.index')
                 ->with('error', 'Kelas Gagal ditambahkan.');
             throw $th;

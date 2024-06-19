@@ -19,7 +19,7 @@ export const MapelAddModal = ({ isOpen, onClose, data }) => {
   const { setPage } = usePage();
   const [isMounted, setIsMounted] = useState(false);
 
-  const { nama_mata_pelajaran, id } = data;
+  const { nama_mata_pelajaran, id } = data || {};
 
   const form = useForm({
     resolver: zodResolver(formSchema),

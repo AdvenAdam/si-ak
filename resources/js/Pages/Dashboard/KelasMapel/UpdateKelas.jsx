@@ -29,7 +29,8 @@ const formSchema = z.object({
   tahun_selesai: z.string().min(1, { message: "Tahun Selesai Ajaran Belum diisi." }),
 });
 
-const KelasUpdateModal = ({ isOpen, onClose, data }) => {
+const KelasUpdateModal = ({ data }) => {
+  console.log("🚀 ~ KelasUpdateModal ~ data:", data);
   const { setPage } = usePage();
   const { errors, flash, guru, auth } = usePage().props;
   const [isMounted, setIsMounted] = useState(false);
@@ -62,9 +63,6 @@ const KelasUpdateModal = ({ isOpen, onClose, data }) => {
     // eslint-disable-next-line no-undef
     router.post(route("Kelas&Mapel.new"), { ...data, insertFor: "kelas" });
   };
-  const handleClose = () => {
-    onClose();
-  };
 
   const onErrorSubmit = (errors) => {
     if (errors) {
@@ -87,17 +85,10 @@ const KelasUpdateModal = ({ isOpen, onClose, data }) => {
           title: "Save Failed",
           description: errors[key],
           duration: 5000, //5s
-          onClose: () => setPage((prev) => ({ ...prev, errors: null })),
         });
       });
     }
   }, [errors, form, setPage]);
-
-  useEffect(() => {
-    if (flash.success) {
-      onClose();
-    }
-  }, [flash.success, onClose]);
 
   useEffect(() => {
     setIsMounted(true);

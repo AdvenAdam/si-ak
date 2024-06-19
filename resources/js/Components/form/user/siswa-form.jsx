@@ -174,7 +174,8 @@ const SiswaForm = ({ data }) => {
   );
 };
 const AccountForm = ({ form, user }) => {
-  const [updatePassword, setUpdatePassword] = useState(user.length);
+  console.log("🚀 ~ AccountForm ~ user:", !user);
+  const [updatePassword, setUpdatePassword] = useState(!user);
   return (
     <>
       <div className="space-y-2">
@@ -206,15 +207,17 @@ const AccountForm = ({ form, user }) => {
           </>
         )}
       </div>
-      <Button
-        variant={updatePassword ? "outline" : "destructive"}
-        onClick={(e) => {
-          e.preventDefault();
-          setUpdatePassword(!updatePassword);
-        }}
-      >
-        {updatePassword ? "Cancel" : "Update Password"}
-      </Button>
+      {user && (
+        <Button
+          variant={updatePassword ? "outline" : "destructive"}
+          onClick={(e) => {
+            e.preventDefault();
+            setUpdatePassword(!updatePassword);
+          }}
+        >
+          {updatePassword ? "Cancel" : "Update Password"}
+        </Button>
+      )}
     </>
   );
 };

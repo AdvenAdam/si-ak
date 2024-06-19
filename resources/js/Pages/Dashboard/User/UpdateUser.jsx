@@ -1,4 +1,4 @@
-import { UserForm } from "@/Components/form/add-user";
+import AdminForm from "@/Components/form/user/admin-form";
 import GuruForm from "@/Components/form/user/guru-form";
 import SiswaForm from "@/Components/form/user/siswa-form";
 import { BreadcrumbComponent } from "@/Components/ui/custom/breadcrumb";
@@ -22,6 +22,7 @@ const Update = (props) => {
         <div className="flex-1 space-y-6 p-6 md:p-10">
           {props.data.user.role_id === 1 && <SiswaForm data={props.data} />}
           {props.data.user.role_id === 2 && <GuruForm data={props.data} />}
+          {props.data.user.role_id === 3 && <AdminForm data={props.data} />}
         </div>
       </div>
     </Authenticated>

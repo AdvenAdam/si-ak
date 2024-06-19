@@ -45,7 +45,6 @@ const GuruForm = ({ data }) => {
     );
   // NOTE is User Exist form change to edit form
   const { user } = data ?? {};
-  console.log("🚀 ~ GuruForm ~ user:", user);
   const { mapel } = useMapelDataStore();
   const { post, errors, recentlySuccessful } = inertiaForm();
   const hasErrors = Boolean(Object.keys(errors).length);
@@ -57,7 +56,7 @@ const GuruForm = ({ data }) => {
       nip: String(user?.guru?.nip) || "",
       alamat: user?.guru?.alamat || "",
       tanggal_lahir: user?.guru?.tanggal_lahir || "",
-      mapel_id: String(user?.guru?.mapel_id) || "",
+      mapel_id: user ? String(user?.guru?.mapel_id) : "",
       password: "",
       confirm: "",
     },
@@ -91,7 +90,7 @@ const GuruForm = ({ data }) => {
         router.patch(route("user.update", { user: user.id }), { ...data, role_id: 2 });
       } else {
         // eslint-disable-next-line no-undef
-        post(route("user.store", { ...data, role_id: 1 }));
+        post(route("user.store", { ...data, role_id: 2 }));
       }
     } catch (error) {
       console.log(error);
@@ -144,6 +143,7 @@ const GuruForm = ({ data }) => {
                   label: data.nama_mata_pelajaran,
                 }))}
               />
+
               <InputForm
                 form={form}
                 name={"tanggal_lahir"}
@@ -177,7 +177,7 @@ const GuruForm = ({ data }) => {
   );
 };
 const AccountForm = ({ form, user }) => {
-  const [updatePassword, setUpdatePassword] = useState(user.length);
+  const [updatePassword, setUpdatePassword] = useState(!user);
   return (
     <>
       <div className="space-y-2">
@@ -209,15 +209,17 @@ const AccountForm = ({ form, user }) => {
           </>
         )}
       </div>
-      <Button
-        variant={updatePassword ? "outline" : "destructive"}
-        onClick={(e) => {
-          e.preventDefault();
-          setUpdatePassword(!updatePassword);
-        }}
-      >
-        {updatePassword ? "Cancel" : "Update Password"}
-      </Button>
+      {user && (
+        <Button
+          variant={updatePassword ? "outline" : "destructive"}
+          onClick={(e) => {
+            e.preventDefault();
+            setUpdatePassword(!updatePassword);
+          }}
+        >
+          {updatePassword ? "Cancel" : "Update Password"}
+        </Button>
+      )}
     </>
   );
 };

@@ -43,14 +43,14 @@ const AddGuruMapel = ({ form }) => {
         />
       ))}
       <Button
-        variant={"secondary"}
+        variant={"destructive"}
         onClick={(e) => {
           e.preventDefault();
           handleClick("remove");
         }}
         disabled={generateCount === 1}
       >
-        Rmv Pelajaran
+        Hapus Pelajaran
       </Button>
     </div>
   );
