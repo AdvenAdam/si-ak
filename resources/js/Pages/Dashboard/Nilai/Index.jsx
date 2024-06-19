@@ -9,6 +9,7 @@ export default function KelasMapel({ auth, data }) {
   const [tab, setTab] = useState("all");
   const tahunAjar = data?.tahun_ajar;
   const kelas = data?.kelas;
+  console.log("🚀 ~ KelasMapel ~ kelas:", kelas);
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Nilai" />

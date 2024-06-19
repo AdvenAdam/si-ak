@@ -35,9 +35,16 @@ class NilaiController extends Controller
             if ($user->role_id == 2) {
                 $guruId =  Guru::where('user_id', $user->id)->pluck('id');
                 $data = [
-                    'guru' => PivotGuruKelas::with('Guru')->where('guru_id', $guruId)->get(),
-                    'kelas' => PivotGuruKelas::all(),
-                    'kelasGuru' => PivotGuruKelas::with('Guru')->get(),
+                    'guru' => Guru::orderBy('nama_guru')->get(),
+                    'kelas' => Kelas::with('Siswa')->with('Wali')
+                        ->with('guruMapel')
+                        ->where('guru_id', $guruId)
+                        ->orWhereHas('guruMapel', function ($query) use ($guruId) {
+                            $query->where('guru_id', $guruId);
+                        })
+                        ->orderBy('tahun_ajaran', 'desc')
+                        ->orderBy('nama_kelas')
+                        ->get(),
                     'tahun_ajar' => Kelas::select('tahun_ajaran')->groupBy('tahun_ajaran')->get(),
                 ];
             }

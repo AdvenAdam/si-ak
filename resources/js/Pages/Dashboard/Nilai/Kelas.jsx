@@ -14,8 +14,13 @@ export default function Kelas({ auth, data }) {
   const { nama_kelas, tahun_ajaran, wali, mapel, siswa, guru_mapel } = data.data;
   console.log("🚀 ~ Kelas ~ data.data:", data.data);
   const { nilai } = data;
-
+  let dataMapel = mapel;
   const [tab, setTab] = useState("");
+  // guru_mapel
+  if (auth.user.role_id === 2 && auth.user.id !== wali?.user_id) {
+    const dataGuruMapel = guru_mapel.find((value) => value.user_id === auth.user.id);
+    dataMapel = mapel.filter((value) => value.id === dataGuruMapel?.mapel_id);
+  }
 
   return (
     <AuthenticatedLayout user={auth.user}>
@@ -36,7 +41,7 @@ export default function Kelas({ auth, data }) {
             }
           />
           <Combobox
-            data={mapel.map((item) => ({
+            data={dataMapel.map((item) => ({
               value: `${item.id}`,
               label: `${item.nama_mata_pelajaran}`,
             }))}
@@ -57,7 +62,7 @@ export default function Kelas({ auth, data }) {
                 <NilaiTable
                   tab={tab}
                   data={{
-                    mapel,
+                    mapel: dataMapel,
                     siswa,
                     nilai,
                     guru_mapel,
@@ -71,7 +76,7 @@ export default function Kelas({ auth, data }) {
                 <NilaiTable
                   tab={tab}
                   data={{
-                    mapel,
+                    mapel: dataMapel,
                     siswa,
                     nilai,
                     guru_mapel,

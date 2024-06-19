@@ -17,14 +17,31 @@ class KelasController extends Controller
     {
         // NOTE : Reformat Data
         try {
-            $data = [
-                'kelas' => Kelas::with('Siswa')->with('Wali')->with('guruMapel')
-                    ->orderBy('tahun_ajaran', 'desc')
-                    ->orderBy('nama_kelas')
-                    ->get(),
-                'tahun_ajar' => Kelas::select('tahun_ajaran')->groupBy('tahun_ajaran')->get(),
-                'guru'  => Guru::orderBy('nama_guru')->get(),
-            ];
+            $user = auth()->user();
+            // NOTE : Admin Role
+            if ($user->role_id == 3) {
+
+                $data = [
+                    'kelas' => Kelas::with('Siswa')->with('Wali')->with('guruMapel')
+                        ->orderBy('tahun_ajaran', 'desc')
+                        ->orderBy('nama_kelas')
+                        ->get(),
+                    'tahun_ajar' => Kelas::select('tahun_ajaran')->groupBy('tahun_ajaran')->get(),
+                    'guru'  => Guru::orderBy('nama_guru')->get(),
+                ];
+            }
+            if ($user->role_id == 2) {
+                $guruId =  Guru::where('user_id', $user->id)->pluck('id');
+                $data = [
+                    'kelas' => Kelas::with('Siswa')->with('Wali')->with('guruMapel')
+                        ->orderBy('tahun_ajaran', 'desc')
+                        ->orderBy('nama_kelas')
+                        ->where('guru_id', $guruId)
+                        ->get(),
+                    'tahun_ajar' => Kelas::select('tahun_ajaran')->groupBy('tahun_ajaran')->get(),
+                    'guru'  => Guru::orderBy('nama_guru')->get(),
+                ];
+            }
 
             return Inertia::render('Dashboard/KenaikanKelas/Index', [
                 'data' => $data,
