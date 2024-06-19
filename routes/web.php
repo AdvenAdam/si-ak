@@ -29,7 +29,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::get('/', [KelasMapelController::class, 'index'])->name('Kelas&Mapel.index');
         Route::post('/new', [KelasMapelController::class, 'store'])->name('Kelas&Mapel.new');
         Route::get('/kelas/{kelas}', [KelasMapelController::class, 'edit'])->name('kelas.edit');
-        Route::patch('/new/{mapel}', [KelasMapelController::class, 'update'])->name('Kelas&Mapel.update');
+        Route::patch('/new/{alias}', [KelasMapelController::class, 'update'])->name('Kelas&Mapel.update');
         Route::delete('/mapel/{mapel}', [KelasMapelController::class, 'destroyMapel'])->name('mapel.destroy');
         Route::delete('/kelas/{kelas}', [KelasMapelController::class, 'destroyKelas'])->name('kelas.destroy');
     });

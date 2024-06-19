@@ -34,17 +34,21 @@ class KelasMapelController extends Controller
             ]);
         }
     }
-    function edit(): Response
+    function edit(Request $request, Kelas $kelas): Response
     {
         // NOTE : Reformat Data
         try {
-            return Inertia::render('Dashboard/KelasMapel/UpdateKelas', [
+            $data = [
                 'kelas' => Kelas::with('guruMapel')
                     ->orderBy('tahun_ajaran', 'desc')
                     ->orderBy('nama_kelas')
+                    ->find($kelas->id)
                     ->get(),
                 'mapel' => Mapel::orderBy('nama_mata_pelajaran')->get(),
                 'guru'  => Guru::with('Mapel')->orderBy('nama_guru')->get(),
+            ];
+            return Inertia::render('Dashboard/KelasMapel/UpdateKelas', [
+                'data' => $data,
             ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
