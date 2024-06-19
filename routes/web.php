@@ -40,6 +40,9 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::post('/kelas/{kelas}', [NilaiController::class, 'store'])->name('nilai.store');
         Route::patch('/kelas/{nilai}', [NilaiController::class, 'update'])->name('nilai.update');
     });
+    Route::group(['prefix' => 'nilaiSiswa'], function () {
+        Route::get('/', [NilaiController::class, 'nilaiSiswa'])->name('nilaiSiswa.index');
+    });
 
     Route::group(['prefix' => 'kenaikan-kelas'], function () {
         Route::get('/', [KelasController::class, 'index'])->name('kenaikan-kelas.index');

@@ -110,4 +110,22 @@ class NilaiController extends Controller
                 ->with('error', 'Nilai Mata Pelajaran Gagal diubah.');
         }
     }
+    function nilaiSiswa(): Response
+    {
+        $user = auth()->user();
+        //  NOTE : Siswa Role
+        if ($user->role_id == 1) {
+            $siswaId =  Siswa::where('user_id', $user->id)->pluck('id');
+
+
+            $data = [
+                'nilai' => Nilai::with('Siswa')->with('Guru')->with('Mapel')->with('Kelas')->whereIn('siswa_id', $siswaId)->get(),
+                'kelas' => Nilai::where('siswa_id', $siswaId)->select('kelas_id')->groupBy('kelas_id')->with('Kelas')->get(),
+                'siswa' => Siswa::where('user_id', $user->id)->first(),
+            ];
+            return Inertia::render('Dashboard/Nilai/Siswa', [
+                'data' => $data,
+            ]);
+        }
+    }
 }

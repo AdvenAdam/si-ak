@@ -69,6 +69,21 @@ export default function Sidebar({ className }) {
         label: "Kenaikan Kelas",
       },
     ];
+  } else if (auth.user.role_id === 1) {
+    navItems = [
+      {
+        title: "Dashboard",
+        href: "/dashboard",
+        icon: "dashboard",
+        label: "Dashboard",
+      },
+      {
+        title: "Nilai",
+        href: "/dashboard/nilaiSiswa",
+        icon: "kanban",
+        label: "kanban",
+      },
+    ];
   }
   return (
     <nav

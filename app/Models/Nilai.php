@@ -19,8 +19,20 @@ class Nilai extends Model
         'tahun_ajaran',
     ];
 
-    public function siswa(): BelongsTo
+    public function Siswa(): BelongsTo
     {
         return $this->belongsTo(Siswa::class);
+    }
+    public function Guru(): BelongsTo
+    {
+        return $this->belongsTo(Guru::class);
+    }
+    public function Mapel(): BelongsTo
+    {
+        return $this->belongsTo(Mapel::class);
+    }
+    public function Kelas(): BelongsTo
+    {
+        return $this->belongsTo(Kelas::class);
     }
 }
