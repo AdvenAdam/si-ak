@@ -14,7 +14,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 
-    Route::group(['prefix' => 'user', 'middleware' => ['can:admin']], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['check.roles:admin']], function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index');
         Route::get('/new', [UserController::class, 'create'])->name('user.new');
         Route::post('/new', [UserController::class, 'store'])->name('user.store');
@@ -25,7 +25,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('user.destroy');
     });
 
-    Route::group(['prefix' => 'Kelas&Mapel'], function () {
+    Route::group(['prefix' => 'Kelas&Mapel', 'middleware' => ['check.roles:admin']], function () {
         Route::get('/', [KelasMapelController::class, 'index'])->name('Kelas&Mapel.index');
         Route::post('/new', [KelasMapelController::class, 'store'])->name('Kelas&Mapel.new');
         Route::get('/kelas/{kelas}', [KelasMapelController::class, 'edit'])->name('kelas.edit');
@@ -34,7 +34,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::delete('/kelas/{kelas}', [KelasMapelController::class, 'destroyKelas'])->name('kelas.destroy');
     });
 
-    Route::group(['prefix' => 'nilai'], function () {
+    Route::group(['prefix' => 'nilai', 'middleware' => ['check.roles:admin,guru']], function () {
         Route::get('/', [NilaiController::class, 'index'])->name('nilai.index');
         Route::get('/kelas/{kelas}', [NilaiController::class, 'show'])->name('nilai.show');
         Route::post('/kelas/{kelas}', [NilaiController::class, 'store'])->name('nilai.store');
@@ -44,7 +44,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified'])->group(function () 
         Route::get('/', [NilaiController::class, 'nilaiSiswa'])->name('nilaiSiswa.index');
     });
 
-    Route::group(['prefix' => 'kenaikan-kelas'], function () {
+    Route::group(['prefix' => 'kenaikan-kelas', 'middleware' => ['check.roles:admin,guru']], function () {
         Route::get('/', [KelasController::class, 'index'])->name('kenaikan-kelas.index');
         Route::get('/kelas/{kelas}', [KelasController::class, 'show'])->name('kenaikan-kelas.show');
         Route::patch('/kelas/{id}', [KelasController::class, 'update'])->name('kenaikan-kelas.update');
